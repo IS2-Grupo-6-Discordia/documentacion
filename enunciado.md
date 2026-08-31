@@ -2,7 +2,7 @@
 
 # Discordia
 
-![Logo](logo.svg)
+![Logo](assets/logo.svg)
 
 Armá tu server. Sumá tu gente. Hablá en tiempo real.
 
