@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa del sistema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9EDF1;
+    --card:#FBFCFD;
+    --ink:#16202B;
+    --muted:#5A6874;
+    --teal:#24625E;
+    --plum:#5D3A56;
+    --open:#A8763E;
+    --stack:#39557E;
+    --line:#C3CCD4;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Archivo',system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:48px 24px 72px}
+
+  header{max-width:52ch;margin-bottom:36px}
+  h1{
+    font-size:clamp(1.9rem,1.3rem + 2.4vw,2.9rem);
+    font-weight:700;
+    letter-spacing:-.022em;
+    line-height:1.08;
+    margin:0 0 12px;
+  }
+  header p{margin:0;color:var(--muted);font-size:1.05rem}
+
+  .scroller{overflow-x:auto;margin:0 -24px;padding:0 24px 6px}
+  .diagram{display:block;width:100%;min-width:700px;height:auto}
+  .diagram text{font-family:'Archivo',system-ui,sans-serif}
+
+  .legend{
+    display:flex;flex-wrap:wrap;gap:20px;
+    margin:14px 0 44px;color:var(--muted);font-size:.85rem;
+  }
+  .legend span{display:flex;align-items:center;gap:8px}
+  .swatch{width:26px;height:0;border-top:2px solid var(--teal)}
+  .swatch.dash{border-top:2px dashed var(--open)}
+  .legend .lang{color:var(--stack);font-weight:600}
+
+  .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;border-top:1px solid var(--line);padding-top:28px}
+  .cols h2{font-size:.9rem;font-weight:700;margin:0 0 14px;letter-spacing:.01em}
+  .cols .later h2{color:var(--open)}
+  dl{margin:0}
+  dt{font-weight:600;font-size:.93rem;margin-top:12px}
+  dt:first-of-type{margin-top:0}
+  dd{margin:1px 0 0;color:var(--muted);font-size:.85rem;line-height:1.45}
+  .later dt{color:var(--open)}
+  dt em{font-style:normal;font-weight:500;font-size:.8rem;color:var(--stack)}
+
+  .stack{margin-top:44px;border-top:1px solid var(--line);padding-top:28px}
+  .stack h2{font-size:.95rem;font-weight:700;margin:0 0 18px}
+  .stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .stack-grid h3{margin:0 0 6px;font-size:1.05rem;font-weight:700;color:var(--stack)}
+  .stack-grid p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
+  .stack-grid p + p{margin-top:8px}
+
+  .decisiones{margin-top:44px;border-top:1px solid var(--line);padding-top:28px}
+  .decisiones h2{font-size:.95rem;font-weight:700;margin:0 0 14px}
+  .decisiones ol{margin:0;padding-left:1.15em;max-width:62ch}
+  .decisiones li{margin-bottom:11px;color:var(--muted)}
+  .decisiones li b{color:var(--ink);font-weight:600}
+
+  @media (max-width:880px){ .cols{grid-template-columns:repeat(2,1fr)} .stack-grid{grid-template-columns:1fr} }
+  @media (max-width:720px){
+    .wrap{padding:32px 20px 56px}
+    .scroller{margin:0 -20px;padding:0 20px 6px}
+  }
+  @media (max-width:520px){ .cols{grid-template-columns:1fr;gap:24px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Mapa del sistema</h1>
+    <p>Cuatro servicios para arrancar, tres para más adelante, dos bases de datos y dos lenguajes en el backend.</p>
+  </header>
+
+  <div class="scroller">
+  <svg class="diagram" viewBox="0 0 920 662" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway en Go, que rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
+    <defs>
+      <marker id="a-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#24625E"/>
+      </marker>
+      <marker id="a-plum" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#5D3A56"/>
+      </marker>
+    </defs>
+
+    <!-- cliente -->
+    <rect x="360" y="8" width="200" height="76" rx="10" fill="#FBFCFD" stroke="#16202B" stroke-width="1.6"/>
+    <text x="460" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Cliente</text>
+    <text x="460" y="52" text-anchor="middle" font-size="11.5" fill="#5A6874">una app para iOS, Android y web</text>
+    <text x="460" y="72" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">React Native · TypeScript · Tailwind</text>
+    <path d="M460,84 L460,104" fill="none" stroke="#16202B" stroke-width="1.6" marker-end="url(#a-teal)"/>
+
+    <!-- gateway -->
+    <rect x="120" y="112" width="680" height="66" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.8"/>
+    <text x="460" y="141" text-anchor="middle" font-size="15.5" font-weight="600" fill="#16202B">Gateway</text>
+    <text x="460" y="160" text-anchor="middle" font-size="11.5" fill="#5A6874">HTTP para todo lo demás, WebSocket para lo que pasa en vivo</text>
+    <text x="782" y="134" text-anchor="end" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+
+    <!-- bajadas a servicios -->
+    <g fill="none" stroke="#24625E" stroke-width="1.5">
+      <path d="M197,178 L197,228" marker-end="url(#a-teal)"/>
+      <path d="M372,178 L372,228" marker-end="url(#a-teal)"/>
+      <path d="M547,178 L547,228" marker-end="url(#a-teal)"/>
+      <path d="M722,178 L722,228" marker-end="url(#a-teal)"/>
+    </g>
+
+    <!-- servicios base -->
+    <rect x="120" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="197" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Auth</text>
+    <text x="197" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">cuentas, sesiones</text>
+    <text x="197" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y permisos</text>
+    <text x="197" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+
+    <rect x="295" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="372" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Servidores</text>
+    <text x="372" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">canales, miembros</text>
+    <text x="372" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y roles</text>
+    <text x="372" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+
+    <rect x="470" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="547" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Mensajes</text>
+    <text x="547" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">historial, adjuntos</text>
+    <text x="547" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y reacciones</text>
+    <text x="547" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+
+    <rect x="645" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="722" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Voz</text>
+    <text x="722" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">señalización y</text>
+    <text x="722" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">audio en vivo</text>
+    <text x="722" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+
+    <!-- servicios -> bases -->
+    <g fill="none" stroke="#5D3A56" stroke-width="1.5">
+      <path d="M197,332 C197,360 210,362 245,388" marker-end="url(#a-plum)"/>
+      <path d="M372,332 C372,360 355,362 320,388" marker-end="url(#a-plum)"/>
+      <path d="M547,332 C547,360 550,362 560,388" marker-end="url(#a-plum)"/>
+    </g>
+    <path d="M722,332 L722,388" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+    <!-- bases -->
+    <rect x="150" y="396" width="240" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="270" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">PostgreSQL</text>
+    <text x="270" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">usuarios, servidores, canales, roles</text>
+
+    <rect x="440" y="396" width="240" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="560" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
+    <text x="560" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
+
+    <rect x="645" y="396" width="155" height="76" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="722" y="428" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Sin base propia</text>
+    <text x="722" y="446" text-anchor="middle" font-size="11.5" fill="#5A6874">el audio no se guarda</text>
+
+    <!-- separador fase 2 -->
+    <path d="M120,516 L800,516" stroke="#C3CCD4" stroke-width="1" stroke-dasharray="4 6"/>
+    <text x="120" y="546" font-size="12.5" font-weight="600" fill="#A8763E">Más adelante, cuando haya gente usándolo</text>
+
+    <!-- fase 2 -->
+    <rect x="120" y="560" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="226" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Métricas</text>
+    <text x="226" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">uso y salud del sistema</text>
+    <text x="226" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+
+    <rect x="353" y="560" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="459" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Notificaciones</text>
+    <text x="459" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">push, mail y menciones</text>
+    <text x="459" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+
+    <rect x="586" y="560" width="214" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="693" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Monetización</text>
+    <text x="693" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">planes y cobros</text>
+    <text x="693" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+  </svg>
+  </div>
+
+  <div class="legend">
+    <span><i class="swatch"></i>Primera versión</span>
+    <span><i class="swatch dash"></i>Segunda etapa</span>
+    <span><i class="lang">Aa</i>Lenguaje propuesto</span>
+  </div>
+
+  <section class="cols">
+    <div>
+      <h2>Servicios base</h2>
+      <dl>
+        <dt>Auth <em>Python</em></dt>
+        <dd>Registro, login, tokens y quién puede hacer qué.</dd>
+        <dt>Servidores y canales <em>Python</em></dt>
+        <dd>Crear servidores, canales, invitaciones, miembros y roles.</dd>
+        <dt>Mensajes <em>Go</em></dt>
+        <dd>Enviar, editar, borrar, historial paginado, adjuntos y reacciones.</dd>
+        <dt>Voz <em>Go</em></dt>
+        <dd>Quién está en cada canal, señalización WebRTC y el ruteo del audio.</dd>
+      </dl>
+    </div>
+
+    <div class="later">
+      <h2>Más adelante</h2>
+      <dl>
+        <dt>Métricas <em>Python</em></dt>
+        <dd>Usuarios activos, mensajes por canal, errores y latencia.</dd>
+        <dt>Notificaciones <em>Go</em></dt>
+        <dd>Push y mail. Escucha los eventos de Mensajes y Voz.</dd>
+        <dt>Monetización <em>Python</em></dt>
+        <dd>Planes, límites por plan y cobros.</dd>
+      </dl>
+    </div>
+
+    <div>
+      <h2>Datos</h2>
+      <dl>
+        <dt>PostgreSQL</dt>
+        <dd>Todo lo relacional y con permisos: cuentas, servidores, canales, membresías.</dd>
+        <dt>MongoDB</dt>
+        <dd>Mensajes. Mucho volumen, forma variable y consultas casi siempre por canal y fecha.</dd>
+      </dl>
+    </div>
+
+    <div>
+      <h2>Gestión</h2>
+      <dl>
+        <dt>GitHub Projects</dt>
+        <dd>Un tablero con una etiqueta por servicio, para que se vea qué toca a quién.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2>Por qué cada lenguaje donde está</h2>
+    <div class="stack-grid">
+      <div>
+        <h3>Go</h3>
+        <p>Gateway, Mensajes y Voz. Son las piezas que sostienen miles de conexiones abiertas al mismo tiempo y reparten cada mensaje entre todos los que están mirando el canal.</p>
+        <p>Las goroutines hacen eso barato y el binario compilado arranca solo, sin runtime alrededor.</p>
+      </div>
+      <div>
+        <h3>Python</h3>
+        <p>Auth, Servidores y canales, y después Métricas y Monetización. Es donde hay reglas de negocio, validaciones y permisos: se escribe rápido, se lee fácil y el tráfico es de picos cortos, no de conexiones sostenidas.</p>
+        <p>FastAPI si querés async y tipos; Django si preferís traer el admin y el ORM ya resueltos.</p>
+      </div>
+      <div>
+        <h3>React Native + TypeScript</h3>
+        <p>Una sola base de código para iOS, Android y web con React Native Web. Los tipos del cliente pueden generarse desde el esquema de la API para que no se desincronicen.</p>
+        <p>Tailwind en React Native va a través de NativeWind, que traduce las clases a estilos nativos. Las mismas clases sirven en la versión web.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="decisiones">
+    <h2>Lo que falta decidir</h2>
+    <ol>
+      <li><b>¿Arrancar con los dos lenguajes o con uno?</b> Dos backends significan dos toolchains, dos pipelines de CI y dos formas de hacer todo. Una salida es empezar todo en Python y pasar a Go solo Mensajes y Voz cuando el volumen lo justifique.</li>
+      <li><b>Dónde vive el estado en vivo.</b> Presencia, typing y quién está en cada canal de voz cambian todo el tiempo y no van a ninguna de las dos bases. Va a hacer falta algo en memoria, tipo Redis.</li>
+      <li><b>Voz: SFU propio o proveedor.</b> Montar mediasoup o LiveKit da control y cuesta trabajo; usar un servicio externo te saca el problema de encima y te ata a su precio.</li>
+      <li><b>Los mensajes en Mongo necesitan un índice por canal y fecha desde el día uno.</b> Sin eso el historial se vuelve lento apenas crezca.</li>
+      <li><b>Cómo se enteran los servicios entre sí.</b> Cuando exista Notificaciones va a necesitar escuchar lo que pasa en Mensajes; ahí conviene una cola en vez de llamadas directas.</li>
+    </ol>
+  </section>
+
+</div>
+</body>
+</html>
