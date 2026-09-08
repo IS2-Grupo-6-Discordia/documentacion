@@ -94,7 +94,7 @@
   </header>
 
   <div class="scroller">
-  <svg class="diagram" viewBox="0 0 920 662" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway, construido con KrakenD, que valida tokens contra Firebase Auth y rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
+  <svg class="diagram" viewBox="0 0 920 686" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway, construido con KrakenD, que valida tokens contra Firebase Auth y rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
     <defs>
       <marker id="a-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#24625E"/>
@@ -129,78 +129,89 @@
 
     <!-- bajadas a servicios -->
     <g fill="none" stroke="#24625E" stroke-width="1.5">
-      <path d="M197,178 L197,228" marker-end="url(#a-teal)"/>
-      <path d="M372,178 L372,228" marker-end="url(#a-teal)"/>
-      <path d="M547,178 L547,228" marker-end="url(#a-teal)"/>
-      <path d="M722,178 L722,228" marker-end="url(#a-teal)"/>
+      <path d="M190,178 L190,228" marker-end="url(#a-teal)"/>
+      <path d="M370,178 L370,228" marker-end="url(#a-teal)"/>
+      <path d="M550,178 L550,228" marker-end="url(#a-teal)"/>
+      <path d="M730,178 L730,228" marker-end="url(#a-teal)"/>
     </g>
 
     <!-- servicios base -->
-    <rect x="120" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="197" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Auth</text>
-    <text x="197" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">perfil, roles</text>
-    <text x="197" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y permisos</text>
-    <text x="197" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <rect x="120" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="190" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Auth</text>
+    <text x="190" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">dueño del usuario:</text>
+    <text x="190" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">cuenta y perfil</text>
+    <text x="190" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
 
-    <rect x="295" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="372" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Servidores</text>
-    <text x="372" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">canales, miembros</text>
-    <text x="372" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y roles</text>
-    <text x="372" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <rect x="300" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="370" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Servidores</text>
+    <text x="370" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">canales, roles y</text>
+    <text x="370" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">miembros (por user_id)</text>
+    <text x="370" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
 
-    <rect x="470" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="547" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Mensajes</text>
-    <text x="547" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">historial, adjuntos</text>
-    <text x="547" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y reacciones</text>
-    <text x="547" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <rect x="480" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="550" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Mensajes</text>
+    <text x="550" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">historial, adjuntos</text>
+    <text x="550" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y reacciones</text>
+    <text x="550" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
 
-    <rect x="645" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="722" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Voz</text>
-    <text x="722" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">señalización y</text>
-    <text x="722" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">audio en vivo</text>
-    <text x="722" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <rect x="660" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="730" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Voz</text>
+    <text x="730" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">señalización y</text>
+    <text x="730" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">audio en vivo</text>
+    <text x="730" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+
+    <!-- servidores -> auth: referencia interna por user_id, no comparten tabla -->
+    <path d="M300,254 L264,254" fill="none" stroke="#5A6874" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#a-gray)"/>
+    <text x="282" y="245" text-anchor="middle" font-size="8.5" fill="#5A6874">user_id</text>
 
     <!-- servicios -> bases -->
     <g fill="none" stroke="#5D3A56" stroke-width="1.5">
-      <path d="M197,332 C197,360 210,362 245,388" marker-end="url(#a-plum)"/>
-      <path d="M372,332 C372,360 355,362 320,388" marker-end="url(#a-plum)"/>
-      <path d="M547,332 C547,360 550,362 560,388" marker-end="url(#a-plum)"/>
+      <path d="M190,332 C190,360 205,362 230,392" marker-end="url(#a-plum)"/>
+      <path d="M370,332 C370,360 350,362 330,392" marker-end="url(#a-plum)"/>
+      <path d="M550,332 C550,360 553,362 555,392" marker-end="url(#a-plum)"/>
     </g>
-    <path d="M722,332 C722,360 735,362 745,388" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <path d="M730,332 C730,360 740,362 745,392" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
 
     <!-- bases -->
-    <rect x="150" y="396" width="240" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
-    <text x="270" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">PostgreSQL</text>
-    <text x="270" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">usuarios, servidores, canales, roles</text>
+    <rect x="140" y="396" width="280" height="100" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="280" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">PostgreSQL</text>
+    <text x="280" y="448" text-anchor="middle" font-size="11.5" fill="#5A6874">
+      <tspan x="280" dy="0">usuarios (Auth) ·</tspan>
+      <tspan x="280" dy="16">servidores, canales</tspan>
+      <tspan x="280" dy="16">y roles (Servidores)</tspan>
+    </text>
 
-    <rect x="430" y="396" width="220" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
-    <text x="540" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
-    <text x="540" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
+    <rect x="450" y="396" width="210" height="100" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="555" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
+    <text x="555" y="448" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
 
-    <rect x="690" y="396" width="110" height="76" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <rect x="690" y="396" width="110" height="100" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
     <text x="745" y="424" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Sin base</text>
     <text x="745" y="440" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">propia</text>
-    <text x="745" y="458" text-anchor="middle" font-size="9.5" fill="#5A6874">el audio no se guarda</text>
+    <text x="745" y="460" text-anchor="middle" font-size="9.5" fill="#5A6874">
+      <tspan x="745" dy="0">el audio no</tspan>
+      <tspan x="745" dy="13">se guarda</tspan>
+    </text>
 
     <!-- separador fase 2 -->
-    <path d="M120,516 L800,516" stroke="#C3CCD4" stroke-width="1" stroke-dasharray="4 6"/>
-    <text x="120" y="546" font-size="12.5" font-weight="600" fill="#A8763E">Más adelante, cuando haya gente usándolo</text>
+    <path d="M120,540 L800,540" stroke="#C3CCD4" stroke-width="1" stroke-dasharray="4 6"/>
+    <text x="120" y="570" font-size="12.5" font-weight="600" fill="#A8763E">Más adelante, cuando haya gente usándolo</text>
 
     <!-- fase 2 -->
-    <rect x="120" y="560" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="226" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Métricas</text>
-    <text x="226" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">uso y salud del sistema</text>
-    <text x="226" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <rect x="120" y="584" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="226" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Métricas</text>
+    <text x="226" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">uso y salud del sistema</text>
+    <text x="226" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
 
-    <rect x="353" y="560" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="459" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Notificaciones</text>
-    <text x="459" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">push, mail y menciones</text>
-    <text x="459" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <rect x="353" y="584" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="459" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Notificaciones</text>
+    <text x="459" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">push, mail y menciones</text>
+    <text x="459" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
 
-    <rect x="586" y="560" width="214" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="693" y="588" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Monetización</text>
-    <text x="693" y="606" text-anchor="middle" font-size="11.5" fill="#5A6874">planes y cobros</text>
-    <text x="693" y="627" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <rect x="586" y="584" width="214" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
+    <text x="693" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Monetización</text>
+    <text x="693" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">planes y cobros</text>
+    <text x="693" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
   </svg>
   </div>
 
@@ -218,9 +229,9 @@
         <dt>Gateway <em>KrakenD</em></dt>
         <dd>Punto de entrada único. Rutea a cada servicio y valida el token que emite Firebase Auth antes de dejar pasar la request.</dd>
         <dt>Auth <em>Python</em></dt>
-        <dd>La autenticación (login, registro, tokens) corre en Firebase Auth. El servicio guarda el perfil y resuelve permisos y roles a partir de ese usuario.</dd>
+        <dd>La autenticación (login, registro, tokens) corre en Firebase Auth. Este servicio es el dueño del usuario: guarda la cuenta y el perfil (nombre, foto, descripción, estado). Los demás servicios nunca duplican estos datos, solo referencian el <code>user_id</code>.</dd>
         <dt>Servidores y canales <em>Python</em></dt>
-        <dd>Crear servidores, canales, invitaciones, miembros y roles.</dd>
+        <dd>Crear servidores, canales, invitaciones, membresías y roles internos de cada servidor. La membresía guarda <code>user_id</code> + rol; el perfil del miembro se resuelve consultando a Auth.</dd>
         <dt>Mensajes <em>Go</em></dt>
         <dd>Enviar, editar, borrar, historial paginado, adjuntos y reacciones.</dd>
         <dt>Voz <em>Go</em></dt>
@@ -244,7 +255,7 @@
       <h2>Datos</h2>
       <dl>
         <dt>PostgreSQL</dt>
-        <dd>Todo lo relacional y con permisos: cuentas, servidores, canales, membresías.</dd>
+        <dd>Todo lo relacional y con permisos. Auth y Servidores usan la misma instancia pero cada uno es dueño de sus tablas: Auth tiene cuentas y perfiles, Servidores tiene servidores, canales, roles y membresías (que referencian el <code>user_id</code> de Auth, sin duplicar su perfil).</dd>
         <dt>MongoDB</dt>
         <dd>Mensajes. Mucho volumen, forma variable y consultas casi siempre por canal y fecha.</dd>
       </dl>
@@ -270,7 +281,7 @@
       <div>
         <h3>Firebase Auth</h3>
         <p>La autenticación (alta de cuentas, login, recuperación de contraseña, tokens) se delega a Firebase Auth en vez de escribirla desde cero.</p>
-        <p>El servicio Auth propio se queda con lo que Firebase no resuelve: perfil, roles y permisos dentro de Discordia.</p>
+        <p>El servicio Auth propio se queda con lo que Firebase no resuelve, y es el dueño de esos datos: perfil de usuario, cuenta dentro de Discordia. Servidores solo guarda el <code>user_id</code> como referencia — nunca copia el perfil.</p>
       </div>
       <div>
         <h3>Go</h3>
