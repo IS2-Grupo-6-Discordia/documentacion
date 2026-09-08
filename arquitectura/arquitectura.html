@@ -94,13 +94,16 @@
   </header>
 
   <div class="scroller">
-  <svg class="diagram" viewBox="0 0 920 662" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway en Go, que rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
+  <svg class="diagram" viewBox="0 0 920 662" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway, construido con KrakenD, que valida tokens contra Firebase Auth y rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
     <defs>
       <marker id="a-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#24625E"/>
       </marker>
       <marker id="a-plum" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#5D3A56"/>
+      </marker>
+      <marker id="a-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#5A6874"/>
       </marker>
     </defs>
 
@@ -113,9 +116,16 @@
 
     <!-- gateway -->
     <rect x="120" y="112" width="680" height="66" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.8"/>
-    <text x="460" y="141" text-anchor="middle" font-size="15.5" font-weight="600" fill="#16202B">Gateway</text>
-    <text x="460" y="160" text-anchor="middle" font-size="11.5" fill="#5A6874">HTTP para todo lo demás, WebSocket para lo que pasa en vivo</text>
-    <text x="782" y="134" text-anchor="end" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <text x="450" y="141" text-anchor="middle" font-size="15.5" font-weight="600" fill="#16202B">Gateway</text>
+    <text x="450" y="160" text-anchor="middle" font-size="11.5" fill="#5A6874">HTTP para todo lo demás, WebSocket para lo que pasa en vivo</text>
+    <text x="772" y="134" text-anchor="end" font-size="11.5" font-weight="600" fill="#39557E">KrakenD</text>
+
+    <!-- firebase auth (externo) -->
+    <rect x="812" y="112" width="96" height="66" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="860" y="138" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Firebase</text>
+    <text x="860" y="153" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Auth</text>
+    <text x="860" y="169" text-anchor="middle" font-size="9.5" fill="#5A6874">externo</text>
+    <path d="M812,145 L806,145" fill="none" stroke="#5A6874" stroke-width="1.5" marker-end="url(#a-gray)"/>
 
     <!-- bajadas a servicios -->
     <g fill="none" stroke="#24625E" stroke-width="1.5">
@@ -128,7 +138,7 @@
     <!-- servicios base -->
     <rect x="120" y="236" width="155" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
     <text x="197" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Auth</text>
-    <text x="197" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">cuentas, sesiones</text>
+    <text x="197" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">perfil, roles</text>
     <text x="197" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y permisos</text>
     <text x="197" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
 
@@ -156,20 +166,21 @@
       <path d="M372,332 C372,360 355,362 320,388" marker-end="url(#a-plum)"/>
       <path d="M547,332 C547,360 550,362 560,388" marker-end="url(#a-plum)"/>
     </g>
-    <path d="M722,332 L722,388" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <path d="M722,332 C722,360 735,362 745,388" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
 
     <!-- bases -->
     <rect x="150" y="396" width="240" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
     <text x="270" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">PostgreSQL</text>
     <text x="270" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">usuarios, servidores, canales, roles</text>
 
-    <rect x="440" y="396" width="240" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
-    <text x="560" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
-    <text x="560" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
+    <rect x="430" y="396" width="220" height="76" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="540" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
+    <text x="540" y="447" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
 
-    <rect x="645" y="396" width="155" height="76" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <text x="722" y="428" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Sin base propia</text>
-    <text x="722" y="446" text-anchor="middle" font-size="11.5" fill="#5A6874">el audio no se guarda</text>
+    <rect x="690" y="396" width="110" height="76" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="745" y="424" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Sin base</text>
+    <text x="745" y="440" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">propia</text>
+    <text x="745" y="458" text-anchor="middle" font-size="9.5" fill="#5A6874">el audio no se guarda</text>
 
     <!-- separador fase 2 -->
     <path d="M120,516 L800,516" stroke="#C3CCD4" stroke-width="1" stroke-dasharray="4 6"/>
@@ -196,15 +207,18 @@
   <div class="legend">
     <span><i class="swatch"></i>Primera versión</span>
     <span><i class="swatch dash"></i>Segunda etapa</span>
-    <span><i class="lang">Aa</i>Lenguaje propuesto</span>
+    <span><i class="lang">Aa</i>Lenguaje o tecnología propuesta</span>
+    <span><i class="swatch dash" style="border-top-color:#5A6874"></i>Servicio externo</span>
   </div>
 
   <section class="cols">
     <div>
       <h2>Servicios base</h2>
       <dl>
+        <dt>Gateway <em>KrakenD</em></dt>
+        <dd>Punto de entrada único. Rutea a cada servicio y valida el token que emite Firebase Auth antes de dejar pasar la request.</dd>
         <dt>Auth <em>Python</em></dt>
-        <dd>Registro, login, tokens y quién puede hacer qué.</dd>
+        <dd>La autenticación (login, registro, tokens) corre en Firebase Auth. El servicio guarda el perfil y resuelve permisos y roles a partir de ese usuario.</dd>
         <dt>Servidores y canales <em>Python</em></dt>
         <dd>Crear servidores, canales, invitaciones, miembros y roles.</dd>
         <dt>Mensajes <em>Go</em></dt>
@@ -249,13 +263,23 @@
     <h2>Por qué cada lenguaje donde está</h2>
     <div class="stack-grid">
       <div>
+        <h3>KrakenD</h3>
+        <p>El Gateway no es un servicio a medida: es una API gateway declarativa, configurada por archivo en vez de código propio para mantener.</p>
+        <p>Valida el token de Firebase Auth en el borde y rutea al resto de los servicios, así ninguno tiene que reimplementar esa verificación.</p>
+      </div>
+      <div>
+        <h3>Firebase Auth</h3>
+        <p>La autenticación (alta de cuentas, login, recuperación de contraseña, tokens) se delega a Firebase Auth en vez de escribirla desde cero.</p>
+        <p>El servicio Auth propio se queda con lo que Firebase no resuelve: perfil, roles y permisos dentro de Discordia.</p>
+      </div>
+      <div>
         <h3>Go</h3>
-        <p>Gateway, Mensajes y Voz. Son las piezas que sostienen miles de conexiones abiertas al mismo tiempo y reparten cada mensaje entre todos los que están mirando el canal.</p>
+        <p>Mensajes y Voz. Son las piezas que sostienen miles de conexiones abiertas al mismo tiempo y reparten cada mensaje entre todos los que están mirando el canal.</p>
         <p>Las goroutines hacen eso barato y el binario compilado arranca solo, sin runtime alrededor.</p>
       </div>
       <div>
         <h3>Python</h3>
-        <p>Auth, Servidores y canales, y después Métricas y Monetización. Es donde hay reglas de negocio, validaciones y permisos: se escribe rápido, se lee fácil y el tráfico es de picos cortos, no de conexiones sostenidas.</p>
+        <p>Servidores y canales, y después Métricas y Monetización. Es donde hay reglas de negocio, validaciones y permisos: se escribe rápido, se lee fácil y el tráfico es de picos cortos, no de conexiones sostenidas.</p>
         <p>FastAPI si querés async y tipos; Django si preferís traer el admin y el ORM ya resueltos.</p>
       </div>
       <div>
