@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/IS2-Grupo-6-Discordia/documentacion/eventos/sobre.schema.json",
+  "title": "Sobre de evento de Discordia",
+  "description": "Formato común de todo evento publicado en el bus (ver adr/0001 y eventos.md). El contenido de `data` depende de `type` y está documentado en el catálogo.",
+  "type": "object",
+  "required": ["id", "type", "occurred_at", "source", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Identificador único del evento (UUID). Los consumidores deduplican por este campo.",
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "type": {
+      "description": "<dominio>.<entidad>.<accion>, en inglés, minúsculas y con la acción en pasado (ej. auth.user.suspended).",
+      "type": "string",
+      "pattern": "^[a-z][a-z_]*\\.[a-z][a-z_]*\\.[a-z][a-z_]*$"
+    },
+    "occurred_at": {
+      "description": "Momento en que ocurrió el hecho (no en que se publicó), RFC 3339 con zona horaria.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "description": "Servicio que emitió el evento.",
+      "type": "string",
+      "enum": ["autenticacion", "servidores", "mensajes", "voz"]
+    },
+    "data": {
+      "description": "Payload específico del tipo de evento.",
+      "type": "object"
+    }
+  }
+}
