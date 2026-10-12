@@ -54,9 +54,9 @@ Todo evento viaja con el mismo sobre ([JSON Schema](eventos/sobre.schema.json)):
 Un staff suspendió una cuenta a nivel plataforma (historia 29).
 
 - **Emisor:** autenticación (`discordia:events:auth`).
-- **Consumidores previstos:**
-  - voz: desconecta al usuario de todas las salas (`RemoveParticipant`);
-  - mensajes: cierra sus conexiones en tiempo real.
+- **Consumidores:**
+  - voz (grupo `voz`): desconecta al usuario de todas las salas de voz (`RemoveParticipant`). No deduplica por `id` ni compara `occurred_at`: sacar de una sala a alguien que ya no está es un no-op, así que procesar el evento dos veces tiene el mismo efecto que una. Si un `suspended` viejo llega después de un `reactivated`, el usuario queda desconectado una vez y puede volver a entrar. Detalle en `agents/integraciones.md` de voz;
+  - mensajes (previsto): cierra sus conexiones en tiempo real.
 - **`data`:**
 
 | Campo | Tipo | Descripción |
@@ -69,7 +69,10 @@ Un staff suspendió una cuenta a nivel plataforma (historia 29).
 Un staff reactivó una cuenta suspendida.
 
 - **Emisor:** autenticación (`discordia:events:auth`).
-- **Consumidores previstos:** ninguno todavía. Sirve para resolver el desorden respecto de `auth.user.suspended`.
+- **Consumidores:**
+  - voz (grupo `voz`): ACK sin efecto. Voz no guarda estado: el usuario reactivado vuelve a entrar con un join normal.
+
+  Sirve para resolver el desorden respecto de `auth.user.suspended`.
 - **`data`:**
 
 | Campo | Tipo | Descripción |
