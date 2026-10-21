@@ -96,3 +96,15 @@ Recurso: canal de voz (`channel_id`). Se suscribe a un canal quien tiene acceso 
 - **Siempre es la lista completa** del canal. Un canal vacío es `"participants": []`.
 - **`microphone_muted`:** silenciar el micrófono no genera webhook, así que fuera de la sala ese dato puede tardar hasta la próxima reconciliación. Dentro de la sala, el cliente usa los eventos de LiveKit, que son instantáneos.
 - **Los nombres no viajan:** el cliente los resuelve con `POST /api/v1/auth/users/batch`.
+
+### Pérdida de acceso a un servidor
+
+```json
+{"type": "voice.access_revoked", "server_id": "<uuid>"}
+```
+
+- **Cuándo se manda:** cuando el usuario pierde el acceso a un servidor mientras tiene la conexión abierta. Hoy, al recibir el evento `servers.member.banned` ([eventos](eventos.md#serversmemberbanned)). La decisión está en el [ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md).
+- **La conexión no se cierra:** el usuario sigue suscripto a los canales de sus otros servidores. El 4403 queda para la pérdida de acceso global (suspensión).
+- **Qué hace voz:** da de baja las suscripciones de esa conexión a los canales de ese servidor y olvida el acceso que tenía en caché. Un `subscribe` posterior a uno de esos canales responde un `error` 403.
+- **Qué hace el cliente:** deja de mostrar el servidor, sale del canal de voz si estaba en uno de ese servidor y le avisa al usuario.
+- **No se garantiza la entrega:** si el socket estaba caído en ese momento, el aviso se pierde (Pub/Sub no retiene mensajes). El cliente se entera igual por el 403 de la próxima llamada HTTP al servidor.
