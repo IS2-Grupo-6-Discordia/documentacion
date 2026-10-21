@@ -79,6 +79,38 @@ Un staff reactivó una cuenta suspendida.
 |---|---|---|
 | `user_id` | UUID | Usuario reactivado |
 
-### `servers.member.banned` (a definir)
+### `servers.member.banned`
 
-Lo va a definir servidores cuando implemente el baneo (historia 25). Consumidor previsto: voz, que desconecta al usuario de las salas de ese servidor.
+Un miembro con permiso de moderación baneó a un usuario de un servidor (historia 25). El usuario deja de ser miembro, si lo era, y no puede volver a unirse mientras el baneo siga activo.
+
+- **Emisor:** servidores (`discordia:events:servers`). Banear a alguien que ya está baneado no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): saca al usuario de las salas de voz **de ese servidor** (`RemoveParticipant`) y le avisa por WebSocket con `voice.access_revoked` ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md)). Las salas de otros servidores no se tocan. No deduplica por `id`: sacar de una sala a alguien que ya no está es un no-op. Si un `banned` viejo llega después de un `unbanned`, el usuario queda desconectado una vez y, como ya no es miembro, igual tiene que volver a unirse con una invitación;
+  - mensajes (previsto): deja de entregarle los mensajes de ese servidor;
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor del que se lo baneó |
+| `user_id` | UUID | Usuario baneado |
+| `banned_by` | UUID | Miembro que baneó |
+
+El motivo del baneo no viaja en el evento: se consulta en servidores (`GET /api/v1/servers/{server_id}/bans`).
+
+### `servers.member.unbanned`
+
+Un miembro con permiso de moderación revocó el baneo de un usuario (historia 26). El usuario puede volver a unirse con una invitación válida; la membresía **no** se restaura sola.
+
+- **Emisor:** servidores (`discordia:events:servers`).
+- **Consumidores:**
+  - voz (grupo `voz`): ACK sin efecto. Voz no guarda estado: el usuario vuelve a entrar con un join normal cuando sea miembro otra vez.
+
+  Sirve para resolver el desorden respecto de `servers.member.banned`.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor |
+| `user_id` | UUID | Usuario al que se le revocó el baneo |
+| `unbanned_by` | UUID | Miembro que revocó el baneo |
