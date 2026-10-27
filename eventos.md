@@ -12,12 +12,14 @@ Todo evento viaja con el mismo sobre ([JSON Schema](eventos/sobre.schema.json)):
   "type": "auth.user.suspended",
   "occurred_at": "2026-10-06T18:03:12.123456+00:00",
   "source": "autenticacion",
-  "data": { "user_id": "…", "suspended_by": "…" }
+  "data": { "user_id": "…", "suspended_by": "…" },
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
 }
 ```
 
 - `type`: `<dominio>.<entidad>.<accion>`, en inglés y en pasado.
 - `occurred_at`: cuándo ocurrió el hecho, no cuándo se publicó.
+- `traceparent` (opcional): contexto de traza W3C del request que originó el evento. El emisor lo completa al construir el sobre y el consumidor procesa el evento como hijo de esa traza. Si falta o es inválido, el evento se procesa igual. Ver [`observabilidad.md`](observabilidad.md#eventos).
 - **Cambios en `data`:** agregar campos es compatible y los consumidores deben ignorar los que no conocen. Quitar o cambiar el significado de un campo requiere un **tipo nuevo**, por ejemplo `auth.user.suspended_v2`, y avisar a los consumidores.
 
 ## Convenciones de Redis Streams

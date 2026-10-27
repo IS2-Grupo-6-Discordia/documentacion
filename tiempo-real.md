@@ -68,6 +68,30 @@ Los demás tipos los define cada servicio. Convención: `<dominio>.<cosa>`, por 
 | 4403 | Se perdió el acceso (por ejemplo, suspensión) | No reconectar hasta que cambie la sesión |
 | 4429 | Demasiadas conexiones de este usuario | Reconectar con backoff |
 
+## Trazabilidad
+
+Cómo viaja el contexto de traza por el WebSocket. El contrato general está en [`observabilidad.md`](observabilidad.md).
+
+- **Al conectar:** el navegador no puede mandar headers en el upgrade, así que el cliente agrega un `traceparent` nuevo a la URL: `wss://<servicio>/ws?ticket=<ticket>&traceparent=<traceparent>`. El servicio lo usa como padre del span de la conexión. Si falta o es inválido, empieza una traza nueva. **No** es motivo de rechazo.
+- **Del cliente al servidor:** cualquier frame puede llevar un `request_id` opcional (1 a 128 caracteres). El servicio lo pone en los logs y en el span de ese mensaje.
+
+  ```json
+  {"type": "subscribe", "channel_ids": ["<uuid>"], "request_id": "8f3c2b1a-…"}
+  ```
+
+- **Del servidor al cliente:**
+  - Los `error` devuelven el `request_id` del frame que los causó, si vino.
+  - Los demás frames pueden llevar el `trace_id` de lo que los originó: un webhook, un evento del bus, una suscripción. Así se puede saltar desde la consola del navegador a la traza.
+
+  ```json
+  {"type": "error", "code": 403, "detail": "No tenés acceso a este canal.", "channel_id": "<uuid>", "request_id": "8f3c2b1a-…"}
+  {"type": "voice.participants", "channel_id": "<uuid>", "participants": [], "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736"}
+  ```
+
+- **Entre instancias:** lo que el servicio reparte por Redis Pub/Sub lleva el `traceparent` de lo que lo originó.
+- Los dos campos son opcionales y se pueden ignorar, como cualquier campo desconocido.
+- El `traceparent` de la URL no es un secreto, pero la URL completa sigue sin loguearse, porque lleva el ticket.
+
 ## Reconexión (cliente)
 
 - **Backoff exponencial con jitter:** 1 s, 2 s, 4 s… hasta 30 s. Se reinicia al conectar bien.
