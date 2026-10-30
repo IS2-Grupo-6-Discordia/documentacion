@@ -1,6 +1,6 @@
 # Observabilidad y trazabilidad
 
-Contrato común de logs y trazas de todos los servicios, incluido mensajes. La decisión está en el [ADR 0008](adr/0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md) y el plan para llegar, en [`PLAN_TRAZABILIDAD.md`](PLAN_TRAZABILIDAD.md).
+Contrato común de logs y trazas de todos los servicios, incluido mensajes. La decisión está en el [ADR 0008](adr/0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md).
 
 ## Ids
 
@@ -18,7 +18,7 @@ Contrato común de logs y trazas de todos los servicios, incluido mensajes. La d
   - **Siempre** se devuelve en la respuesta, también en los errores.
   - Se reenvía en toda llamada a otro servicio.
 - **Llamadas entre servicios:** el cliente HTTP instrumentado inyecta `traceparent` solo. `X-Request-Id` se reenvía a mano.
-- **Gateway:** reenvía los tres headers a todos los backends. El CORS los permite y expone `X-Request-Id`, así el navegador puede leerlo.
+- **Gateway:** reenvía los tres headers a todos los backends. El CORS los permite y expone `X-Request-Id`, así el navegador puede leerlo. No aparece como span: el exporter de KrakenD CE no puede autenticarse contra Grafana Cloud.
 - **Navegador:** el cliente genera los dos headers en cada pedido, con flags `01` (muestreado). Si el pedido se reintenta (por ejemplo, después de renovar el token), mantiene el mismo `X-Request-Id`.
 
 ## Eventos
@@ -49,7 +49,7 @@ Una línea por evento, en JSON, por stdout.
 | `level` | Sí | `DEBUG`, `INFO`, `WARNING`/`WARN` o `ERROR` |
 | `logger` | Sí | Componente que loguea, por ejemplo `app.services.ban_service` o `voz.http` |
 | `message` | Sí | Qué pasó, en castellano o en inglés, sin datos personales |
-| `service` | Sí | `autenticacion`, `servidores`, `mensajes`, `voz` o `gateway` (igual que `OTEL_SERVICE_NAME`) |
+| `service` | Sí | `autenticacion`, `servidores`, `mensajes` o `voz` (igual que `OTEL_SERVICE_NAME`) |
 | `trace_id`, `span_id` | Si hay un span activo | En hexa, como en `traceparent` |
 | `request_id` | Si la línea es parte de un pedido HTTP o de un frame con `request_id` | El valor de `X-Request-Id` |
 | `user_id` | Si se conoce | UUID del usuario que originó la acción |
@@ -100,6 +100,6 @@ Se usan las [variables estándar de OpenTelemetry](https://opentelemetry.io/docs
 
 ## Cómo seguir una acción
 
-1. Del cliente: el código que muestra en un error 5xx es el `request_id`.
-2. En los logs: buscar ese `request_id`. La línea trae el `trace_id`.
+1. Del cliente: el código que muestra en un error 5xx son los primeros 8 caracteres del `request_id`.
+2. En los logs: buscar el `request_id` que empieza con ese código. La línea trae el `trace_id`.
 3. En Grafana (Tempo): abrir la traza por `trace_id`, que muestra todos los servicios y tramos que tocó la acción, con sus tiempos.
