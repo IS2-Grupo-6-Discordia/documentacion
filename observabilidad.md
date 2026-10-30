@@ -39,7 +39,7 @@ Dentro de un servicio, lo que se reparte entre instancias por Redis Pub/Sub tamb
 
 ## Logs
 
-Una línea por evento, en JSON, por stdout.
+Una línea por evento, en JSON, por stdout. Si está `OTEL_EXPORTER_OTLP_ENDPOINT`, autenticación, servidores y voz también los mandan por OTLP a Loki, con el `trace_id`, para saltar de una traza a sus logs en Grafana. Los del exporter no se exportan.
 
 ### Campos
 
