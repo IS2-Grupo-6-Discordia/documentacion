@@ -116,3 +116,32 @@ Un miembro con permiso de moderación revocó el baneo de un usuario (historia 2
 | `server_id` | UUID | Servidor |
 | `user_id` | UUID | Usuario al que se le revocó el baneo |
 | `unbanned_by` | UUID | Miembro que revocó el baneo |
+
+### `servers.server.suspended`
+
+Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investiga una denuncia. Ningún miembro puede usarlo mientras dure la suspensión: servidores responde `423` a todas las rutas de miembros de ese servidor, sus invitaciones dejan de funcionar y niega el acceso a voz. El contenido se conserva.
+
+- **Emisor:** servidores (`discordia:events:servers`). Suspender un servidor ya suspendido no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, así quien estaba en una llamada queda afuera. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
+  - mensajes (previsto): deja de entregar los mensajes de ese servidor.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor suspendido |
+| `suspended_by` | UUID | Staff que suspendió |
+
+### `servers.server.reactivated`
+
+Un usuario del staff levantó la suspensión de un servidor. Sus miembros recuperan el acceso normal, con todo su contenido.
+
+- **Emisor:** servidores (`discordia:events:servers`). Reactivar un servidor que no está suspendido no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): ACK sin efecto. Los miembros vuelven a entrar con un join normal.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor reactivado |
+| `reactivated_by` | UUID | Staff que levantó la suspensión |
