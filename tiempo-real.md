@@ -68,6 +68,8 @@ Los demás tipos los define cada servicio. Convención: `<dominio>.<cosa>`, por 
 | 4403 | Se perdió el acceso (por ejemplo, suspensión) | No reconectar hasta que cambie la sesión |
 | 4429 | Demasiadas conexiones de este usuario | Reconectar con backoff |
 
+> **Ping sin pong:** si no llega el pong dentro del timeout (10 s), el servidor cierra la conexión. **voz** cierra con **1008** (implementa su propio ciclo de ping). **mensajes** delega el keepalive en su servidor ASGI (uvicorn/`websockets`), que cierra ese caso con **1011**. El cliente trata **1008 y 1011 igual: reconecta**, así que la diferencia no cambia su comportamiento.
+
 ## Trazabilidad
 
 Cómo viaja el contexto de traza por el WebSocket. El contrato general está en [`observabilidad.md`](observabilidad.md).
