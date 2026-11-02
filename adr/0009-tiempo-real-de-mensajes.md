@@ -35,7 +35,7 @@ Tanto al suscribirse por WebSocket como en el `GET` del historial, mensajes **co
 GET /internal/messages/channels/{channel_id}/access?user_id={uuid}
 X-Service-Secret: <secreto del par mensajes → servidores>
 
-200 { "channel": { "id": "...", "server_id": "...", "type": "text" }, "can_read": true }
+200 { "channel": { "id": "...", "server_id": "...", "type": "text" }, "can_send": true }
 403 el usuario no es miembro del servidor (o está baneado)
 404 el canal no existe
 409 el canal no es de texto
@@ -44,6 +44,7 @@ X-Service-Secret: <secreto del par mensajes → servidores>
 
 - Las rutas `/internal/*` no se publican en el gateway. Se protegen con un **secreto propio del par mensajes → servidores** (`X-Service-Secret`, con el valor de `SERVICE_SECRET_MENSAJES` del lado de servidores), distinto del secreto del gateway.
 - El `user_id` va por query porque lo manda mensajes, un servicio de confianza, que lo toma de `X-User-Id`; el usuario final nunca elige ese valor.
+- Un `200` significa que el usuario tiene **acceso de lectura** al canal (es miembro y el canal es de texto): alcanza para suscribirse por WebSocket y para el `GET` del historial. El booleano **`can_send`** indica, además, si puede **enviar** (hace falta el permiso `SEND_MESSAGES`, con los overrides por canal de HU-7 ya aplicados); un miembro sin ese permiso recibe `200` con `can_send: false`.
 
 ### Mapeo de la suspensión a 423
 
