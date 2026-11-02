@@ -145,3 +145,19 @@ Un usuario del staff levantó la suspensión de un servidor. Sus miembros recupe
 |---|---|---|
 | `server_id` | UUID | Servidor reactivado |
 | `reactivated_by` | UUID | Staff que levantó la suspensión |
+
+### `servers.server.deleted`
+
+Un servidor se eliminó de forma permanente, junto con sus canales, roles, miembros, invitaciones y baneos. Lo puede eliminar su dueño (confirmando el nombre) o un usuario del staff desde el backoffice, por ejemplo cuando incumple los términos de la plataforma.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que el borrado; si el servidor ya no existe no se emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, igual que con `servers.server.suspended`. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
+  - mensajes (previsto): borra todos los mensajes de los canales de ese servidor.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor eliminado |
+| `deleted_by` | UUID | Quién lo eliminó: el dueño o un usuario del staff |
+| `by_staff` | boolean | `true` si lo eliminó el staff desde el backoffice |
