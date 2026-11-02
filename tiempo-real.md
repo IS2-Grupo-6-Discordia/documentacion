@@ -169,14 +169,12 @@ Recurso: canal de texto (`channel_id`). Se suscribe a un canal quien tiene acces
 - **No cierra el socket:** igual que cualquier otro `error`. El 4403 queda para la pérdida de acceso global.
 - **Qué hace el cliente:** lo trata igual que el 423 de HTTP, mostrando el estado "servidor suspendido".
 
-### Pérdida de acceso a un servidor
+### Pérdida de acceso a un servidor (reservado, **no implementado** en esta historia)
 
 ```json
 {"type": "messages.access_revoked", "server_id": "<uuid>"}
 ```
 
-- **Cuándo se manda:** cuando el usuario pierde el acceso a un servidor mientras tiene la conexión abierta. Es el mismo esquema de revocación por servidor que voz ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md)), con el tipo de mensaje propio de mensajes.
-- **La conexión no se cierra:** el usuario sigue suscripto a los canales de sus otros servidores. El 4403 queda para la pérdida de acceso global (suspensión).
-- **Qué hace mensajes:** da de baja las suscripciones de esa conexión a los canales de ese servidor y olvida el acceso que tenía en caché. Un `subscribe` posterior a uno de esos canales responde un `error` 403.
-- **No se garantiza la entrega:** si el socket estaba caído en ese momento, el aviso se pierde (Pub/Sub no retiene mensajes). El cliente se entera igual por el 403 de la próxima llamada HTTP al servidor.
-- **Fuera de alcance de esta historia:** consumir `auth.user.suspended`, `servers.member.banned` o `servers.server.suspended` para cortar la entrega en un socket ya abierto queda **pendiente**. Hoy la revocación en vivo se limita a lo descripto acá; la suspensión global y el baneo se resuelven al reconectar y en la próxima llamada HTTP.
+- **Estado:** el tipo de frame queda **reservado por contrato**, pero mensajes **todavía no lo emite**. La revocación de acceso en vivo sobre un socket ya abierto —el esquema de revocación por servidor que usa voz ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md))— está **fuera de alcance de esta historia** y queda **pendiente**.
+- **Mientras tanto, mensajes no corta la entrega en un socket abierto:** cuando el usuario pierde el acceso a un servidor (baneo, suspensión), se entera por el **403/423 de la próxima llamada HTTP** (enviar o pedir historial) y al **reconectar** (un `subscribe` a un canal sin acceso responde un `error` 403/423). No hay aviso en vivo.
+- **Cuando se implemente:** mensajes consumirá `servers.member.banned`, `servers.server.suspended` y `auth.user.suspended`, dará de baja las suscripciones de esa conexión a los canales de ese servidor y recién ahí emitirá este frame (sin cerrar el socket; el 4403 queda para la pérdida de acceso global). La entrega seguirá siendo best effort: si el socket estaba caído, el aviso se pierde (Pub/Sub no retiene) y se resuelve igual por el 403/423 de la próxima llamada HTTP.
