@@ -78,6 +78,10 @@ El nivel se configura con `LOG_LEVEL` (default `INFO`).
 
 Para identificar a alguien se usa el `user_id`. Lo mismo vale para los atributos de los spans.
 
+## Health checks
+
+Cada servicio expone `/livez`, que no consulta nada, y `/readyz`, que verifica solo sus dependencias propias y nunca a otro servicio (la excepción es el gateway, que verifica el JWKS de autenticación). Ninguno de los dos se traza ni deja línea de acceso. Qué chequea cada servicio y por qué está en el [ADR 0010](adr/0010-health-checks-livez-y-readyz.md).
+
 ## Variables de entorno
 
 Se usan las [variables estándar de OpenTelemetry](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/), sin nombres propios:
