@@ -134,6 +134,42 @@ Un miembro con permiso de moderación (`KICK_MEMBERS`) expulsó a otro miembro d
 | `user_id` | UUID | Usuario expulsado |
 | `kicked_by` | UUID | Miembro que lo expulsó |
 
+### `servers.member.muted`
+
+Un miembro con permiso de moderación (`MODERATE_MEMBERS`) silenció temporalmente a otro miembro de un servidor (historia 60, [ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md)). Mientras dure, no puede enviar mensajes ni hablar en los canales de voz de ese servidor, pero sigue siendo miembro y puede leer y escuchar.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que guarda el silencio. Silenciar a quien ya está silenciado **reemplaza** la duración y vuelve a emitir el evento con el `expires_at` nuevo.
+- **Consumidores:**
+  - voz (grupo `voz`): en las salas de voz **de ese servidor** en las que está el usuario, le quita la fuente `microphone` en vivo (LiveKit despublica la pista). Si `expires_at` ya pasó cuando llega el evento, lo ignora. No deduplica por `id`: quitar una fuente que ya no tiene es un no-op;
+  - mensajes: no lo consume. Rechaza el envío por el `muted_until` de la consulta de acceso a servidores en cada llamada;
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor en el que se lo silenció |
+| `user_id` | UUID | Usuario silenciado |
+| `muted_by` | UUID | Miembro que lo silenció |
+| `expires_at` | string (ISO 8601) | Cuándo vence el silencio |
+
+El motivo no viaja en el evento: se consulta en servidores (`GET /api/v1/servers/{server_id}/mutes`).
+
+### `servers.member.unmuted`
+
+El silencio de un miembro terminó: un moderador lo levantó antes de tiempo (CA 3) o venció la duración (CA 2). Es el mismo evento en los dos casos.
+
+- **Emisor:** servidores (`discordia:events:servers`). Al levantarlo a mano, en la misma transacción que borra el silencio. Al vencer, lo emite el job de expiración de servidores, que revisa cada 30 segundos y abre su propio span raíz (`mute.expire`) para que el evento lleve `traceparent`. Levantar un silencio que no existe no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): en las salas de voz de ese servidor en las que está el usuario, le devuelve las fuentes configuradas (`MEDIA_ALLOWED_SOURCES`). No deduplica por `id`: devolver una fuente que ya tiene es un no-op. Si un `unmuted` viejo llega después de un `muted` nuevo, el usuario recupera el micrófono hasta que reconecte ([ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md#consecuencias));
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor |
+| `user_id` | UUID | Usuario al que se le levantó el silencio |
+| `unmuted_by` | UUID \| null | Miembro que lo levantó, o `null` si venció |
+
 ### `servers.server.suspended`
 
 Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investiga una denuncia. Ningún miembro puede usarlo mientras dure la suspensión: servidores responde `423` a todas las rutas de miembros de ese servidor, sus invitaciones dejan de funcionar y niega el acceso a voz. El contenido se conserva.
