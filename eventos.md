@@ -117,6 +117,23 @@ Un miembro con permiso de moderación revocó el baneo de un usuario (historia 2
 | `user_id` | UUID | Usuario al que se le revocó el baneo |
 | `unbanned_by` | UUID | Miembro que revocó el baneo |
 
+### `servers.member.kicked`
+
+Un miembro con permiso de moderación (`KICK_MEMBERS`) expulsó a otro miembro de un servidor (historia 59). El usuario deja de ser miembro, pero **no** queda baneado: puede volver a unirse con una invitación válida.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que borra la membresía; expulsar a alguien que ya no es miembro no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): igual que con `servers.member.banned`. Saca al usuario de las salas de voz **de ese servidor** (`RemoveParticipant`) y le avisa por WebSocket con `voice.access_revoked` ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md)). No deduplica por `id`: sacar de una sala a alguien que ya no está es un no-op. Si el evento llega tarde, cuando el usuario ya volvió a unirse, se lo desconecta una vez y puede volver a entrar con un join normal;
+  - mensajes (previsto): deja de entregarle los mensajes de ese servidor. Mientras tanto, el expulsado pierde los canales de texto por la consulta de acceso a servidores en cada llamada;
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor del que se lo expulsó |
+| `user_id` | UUID | Usuario expulsado |
+| `kicked_by` | UUID | Miembro que lo expulsó |
+
 ### `servers.server.suspended`
 
 Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investiga una denuncia. Ningún miembro puede usarlo mientras dure la suspensión: servidores responde `423` a todas las rutas de miembros de ese servidor, sus invitaciones dejan de funcionar y niega el acceso a voz. El contenido se conserva.
