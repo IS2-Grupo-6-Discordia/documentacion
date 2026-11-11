@@ -122,6 +122,7 @@ Recurso: canal de voz (`channel_id`). Se suscribe a un canal quien tiene acceso 
 - **Siempre es la lista completa** del canal. Un canal vacío es `"participants": []`.
 - **`microphone_muted`:** silenciar el micrófono no genera webhook, así que fuera de la sala ese dato puede tardar hasta la próxima reconciliación. Dentro de la sala, el cliente usa los eventos de LiveKit, que son instantáneos.
 - **Los nombres no viajan:** el cliente los resuelve con `POST /api/v1/auth/users/batch`.
+- **Silencio de moderación (historia 60):** no tiene un mensaje propio. Cuando voz le quita el micrófono a un miembro silenciado, LiveKit despublica la pista y el webhook `track_unpublished` hace que aparezca con `microphone_muted: true`. El propio silenciado se entera por el evento `ParticipantPermissionsChanged` de LiveKit ([ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md)).
 
 ### Pérdida de acceso a un servidor
 
