@@ -31,6 +31,11 @@
     "data": {
       "description": "Payload específico del tipo de evento.",
       "type": "object"
+    },
+    "traceparent": {
+      "description": "Contexto de traza W3C del request que originó el evento (ver observabilidad.md). Opcional: si falta o es inválido, el consumidor procesa el evento igual y empieza una traza nueva.",
+      "type": "string",
+      "pattern": "^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
     }
   }
 }

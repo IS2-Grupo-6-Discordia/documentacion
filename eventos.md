@@ -12,12 +12,14 @@ Todo evento viaja con el mismo sobre ([JSON Schema](eventos/sobre.schema.json)):
   "type": "auth.user.suspended",
   "occurred_at": "2026-10-06T18:03:12.123456+00:00",
   "source": "autenticacion",
-  "data": { "user_id": "…", "suspended_by": "…" }
+  "data": { "user_id": "…", "suspended_by": "…" },
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"
 }
 ```
 
 - `type`: `<dominio>.<entidad>.<accion>`, en inglés y en pasado.
 - `occurred_at`: cuándo ocurrió el hecho, no cuándo se publicó.
+- `traceparent` (opcional): contexto de traza W3C del request que originó el evento. El emisor lo completa al construir el sobre y el consumidor procesa el evento como hijo de esa traza. Si falta o es inválido, el evento se procesa igual. Ver [`observabilidad.md`](observabilidad.md#eventos).
 - **Cambios en `data`:** agregar campos es compatible y los consumidores deben ignorar los que no conocen. Quitar o cambiar el significado de un campo requiere un **tipo nuevo**, por ejemplo `auth.user.suspended_v2`, y avisar a los consumidores.
 
 ## Convenciones de Redis Streams
@@ -114,3 +116,48 @@ Un miembro con permiso de moderación revocó el baneo de un usuario (historia 2
 | `server_id` | UUID | Servidor |
 | `user_id` | UUID | Usuario al que se le revocó el baneo |
 | `unbanned_by` | UUID | Miembro que revocó el baneo |
+
+### `servers.server.suspended`
+
+Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investiga una denuncia. Ningún miembro puede usarlo mientras dure la suspensión: servidores responde `423` a todas las rutas de miembros de ese servidor, sus invitaciones dejan de funcionar y niega el acceso a voz. El contenido se conserva.
+
+- **Emisor:** servidores (`discordia:events:servers`). Suspender un servidor ya suspendido no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, así quien estaba en una llamada queda afuera. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
+  - mensajes (previsto): deja de entregar los mensajes de ese servidor.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor suspendido |
+| `suspended_by` | UUID | Staff que suspendió |
+
+### `servers.server.reactivated`
+
+Un usuario del staff levantó la suspensión de un servidor. Sus miembros recuperan el acceso normal, con todo su contenido.
+
+- **Emisor:** servidores (`discordia:events:servers`). Reactivar un servidor que no está suspendido no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): ACK sin efecto. Los miembros vuelven a entrar con un join normal.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor reactivado |
+| `reactivated_by` | UUID | Staff que levantó la suspensión |
+
+### `servers.server.deleted`
+
+Un servidor se eliminó de forma permanente, junto con sus canales, roles, miembros, invitaciones y baneos. Lo puede eliminar su dueño (confirmando el nombre) o un usuario del staff desde el backoffice, por ejemplo cuando incumple los términos de la plataforma.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que el borrado; si el servidor ya no existe no se emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, igual que con `servers.server.suspended`. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
+  - mensajes (previsto): borra todos los mensajes de los canales de ese servidor.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor eliminado |
+| `deleted_by` | UUID | Quién lo eliminó: el dueño o un usuario del staff |
+| `by_staff` | boolean | `true` si lo eliminó el staff desde el backoffice |
