@@ -74,7 +74,7 @@ Los demás tipos los define cada servicio. Convención: `<dominio>.<cosa>`, por 
 
 Cómo viaja el contexto de traza por el WebSocket. El contrato general está en [`observabilidad.md`](observabilidad.md).
 
-- **Al conectar:** el navegador no puede mandar headers en el upgrade, así que el cliente agrega un `traceparent` nuevo a la URL: `wss://<servicio>/ws?ticket=<ticket>&traceparent=<traceparent>`. El servicio lo usa como padre del span de la conexión. Si falta o es inválido, empieza una traza nueva. **No** es motivo de rechazo.
+- **Al conectar:** el cliente conecta con `wss://<servicio>/ws?ticket=<ticket>`, sin `traceparent`, y el servicio abre una traza nueva para la conexión. Si una URL trae `traceparent` (por ejemplo, una herramienta de prueba), el servicio lo usa como padre. Si es inválido, lo ignora. **No** es motivo de rechazo.
 - **Del cliente al servidor:** cualquier frame puede llevar un `request_id` opcional (1 a 128 caracteres). El servicio lo pone en los logs y en el span de ese mensaje.
 
   ```json
