@@ -6,7 +6,7 @@ Contrato común de logs y trazas de todos los servicios, incluido mensajes. La d
 
 | Id | Qué es | Dónde nace | Cómo viaja |
 |---|---|---|---|
-| `trace_id` | Identifica la traza completa: todo lo que pasó por una acción del usuario, en todos los servicios | En el cliente (o en el primer servicio, si el pedido llega sin `traceparent`) | `traceparent` (W3C Trace Context) |
+| `trace_id` | Identifica la traza completa: todo lo que pasó por una acción del usuario, en todos los servicios | En el primer servicio que recibe el pedido. Los clientes no mandan `traceparent` | `traceparent` (W3C Trace Context) |
 | `span_id` | Identifica un tramo dentro de la traza: un request, una consulta, un evento procesado | En cada servicio, lo genera OpenTelemetry | `traceparent` |
 | `request_id` | Id corto y legible de un pedido HTTP, para soporte y para buscar en los logs | En el cliente (o en el primer servicio) | `X-Request-Id` |
 
@@ -19,7 +19,7 @@ Contrato común de logs y trazas de todos los servicios, incluido mensajes. La d
   - Se reenvía en toda llamada a otro servicio.
 - **Llamadas entre servicios:** el cliente HTTP instrumentado inyecta `traceparent` solo. `X-Request-Id` se reenvía a mano.
 - **Gateway:** reenvía los tres headers a todos los backends. El CORS los permite y expone `X-Request-Id`, así el navegador puede leerlo. No aparece como span: el exporter de KrakenD CE no puede autenticarse contra Grafana Cloud.
-- **Navegador:** el cliente genera los dos headers en cada pedido, con flags `01` (muestreado). Si el pedido se reintenta (por ejemplo, después de renovar el token), mantiene el mismo `X-Request-Id`.
+- **Navegador:** el cliente genera solo el `X-Request-Id` de cada pedido. **No** manda `traceparent`: no exporta spans, y un padre que nunca llega a Tempo hace que la traza se vea como `<root span not yet received>`. Si el pedido se reintenta (por ejemplo, después de renovar el token), mantiene el mismo `X-Request-Id`.
 
 ## Eventos
 
@@ -31,7 +31,7 @@ Contrato común de logs y trazas de todos los servicios, incluido mensajes. La d
 ## Tiempo real
 
 Ver [`tiempo-real.md`](tiempo-real.md#trazabilidad). En resumen:
-- el `traceparent` va en la URL del WebSocket;
+- el span de la conexión nace en el servicio (el cliente no manda `traceparent`);
 - el cliente puede mandar un `request_id` en cada frame;
 - el servidor manda `trace_id` en los frames que emite y devuelve el `request_id` en los `error`.
 

@@ -1,6 +1,7 @@
 # ADR 0008: Trazabilidad distribuida con OpenTelemetry y Grafana Cloud
 
 - **Fecha:** 2026-10-27
+- **Actualizado:** 2026-11-11 (la traza nace en el primer servicio, ver [Actualización](#actualización-2026-11-11))
 
 ## Contexto
 
@@ -24,12 +25,12 @@ Los condicionantes son:
 - Cada backend usa el SDK de OpenTelemetry de su lenguaje e instrumenta el servidor HTTP, los clientes HTTP, la base de datos y Redis.
 - El contexto viaja con los headers estándar **`traceparent`** y **`tracestate`**.
 - **`X-Request-Id`** se mantiene como id corto y legible para soporte. Se reusa si llega, se genera si no, y se devuelve siempre en la respuesta.
-- Los frontends no cargan el SDK. Generan un `traceparent` y un `X-Request-Id` por pedido, así la traza nace en el cliente.
+- Los frontends no cargan el SDK. Generan solo el `X-Request-Id` de cada pedido. La traza nace en el primer servicio que recibe el pedido (ver [Actualización](#actualización-2026-11-11)).
 
 ### El contexto también viaja por eventos y WebSocket
 
 - **Eventos:** el sobre suma un campo opcional `traceparent` ([`eventos.md`](../eventos.md#sobre)). Se captura al construir el sobre, dentro del request, así que queda guardado en el outbox y sobrevive al relay.
-- **WebSocket:** el navegador no puede mandar headers en el upgrade. El `traceparent` va como query param y los frames llevan ids opcionales ([`tiempo-real.md`](../tiempo-real.md#trazabilidad)).
+- **WebSocket:** el span de la conexión nace en el servicio. Los frames llevan ids opcionales ([`tiempo-real.md`](../tiempo-real.md#trazabilidad)).
 
 ### Export por OTLP a Grafana Cloud
 
@@ -47,7 +48,7 @@ El contrato completo (campos de log, niveles, variables y qué no se loguea) est
 - **Honeycomb (free):** muy bueno para trazas y también habla OTLP, así que cambiar después cuesta solo una variable. Se descarta porque los logs y las métricas quedarían en otro lado. Grafana Cloud junta trazas, logs y métricas en un mismo plan gratuito.
 - **Jaeger propio:** sirve en local, pero en producción sería un servicio más en Render que se duerme y pierde datos sin disco. No tiene logs ni métricas.
 - **Un collector OTel propio delante de Grafana:** permitiría muestreo y filtros centralizados, pero es otro servicio que desplegar y mantener despierto. Con el volumen del proyecto no hace falta.
-- **El SDK de OTel en el navegador:** suma peso al bundle y exige exponer el endpoint de Grafana a los navegadores, con su CORS y su credencial. Alcanza con que el cliente genere el `traceparent`.
+- **El SDK de OTel en el navegador:** suma peso al bundle y exige exponer el endpoint de Grafana a los navegadores, con su CORS y su credencial. Alcanza con que el cliente genere el `X-Request-Id`.
 - **Un header propio (`X-Trace-Id`) en vez de W3C:** obliga a escribir la propagación a mano en cada librería. `traceparent` es el estándar que ya entienden OTel, KrakenD y Grafana.
 
 ## Consecuencias
@@ -59,3 +60,13 @@ El contrato completo (campos de log, niveles, variables y qué no se loguea) est
 - **Cuota del plan gratuito:** se excluyen de las trazas `/livez` y `/readyz`, que son la mayor parte del tráfico en reposo. Si la cuota no alcanza, se baja el muestreo con `OTEL_TRACES_SAMPLER`.
 - **Soporte:** el cliente muestra el `X-Request-Id` en los errores 5xx, así un reporte de usuario lleva directo a los logs y a la traza.
 - **mensajes** nace siguiendo este contrato.
+
+## Actualización 2026-11-11
+
+En Grafana Cloud casi todas las trazas aparecían como `<root span not yet received>`. El cliente mandaba un `traceparent` cuyo span padre nunca se exportaba, porque el navegador no tiene SDK y el gateway no aparece como span. Tempo esperaba esa raíz y mostraba cada traza como incompleta, aunque la cadena entre servicios estaba entera.
+
+- **Cambio:** los frontends dejan de mandar `traceparent`, en HTTP y en la URL del WebSocket. El primer servicio que recibe el pedido abre la raíz.
+- **Lo que no cambia:**
+  - El `X-Request-Id` sigue naciendo en el cliente, y es el código que se muestra al usuario para soporte.
+  - Los servicios siguen aceptando `traceparent` si llega (por ejemplo, entre servicios o desde una herramienta), y el gateway lo sigue reenviando.
+- **Lo que se pierde:** nada. Dos pedidos del mismo cliente nunca compartieron traza, porque se generaba un `traceparent` nuevo por pedido.
