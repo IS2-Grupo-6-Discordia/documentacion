@@ -58,7 +58,7 @@ Un staff suspendió una cuenta a nivel plataforma (historia 29).
 - **Emisor:** autenticación (`discordia:events:auth`).
 - **Consumidores:**
   - voz (grupo `voz`): desconecta al usuario de todas las salas de voz (`RemoveParticipant`). No deduplica por `id` ni compara `occurred_at`: sacar de una sala a alguien que ya no está es un no-op, así que procesar el evento dos veces tiene el mismo efecto que una. Si un `suspended` viejo llega después de un `reactivated`, el usuario queda desconectado una vez y puede volver a entrar. Detalle en `agents/integraciones.md` de voz;
-  - mensajes (previsto): cierra sus conexiones en tiempo real.
+  - mensajes (grupo `mensajes`): cierra con `4403` todas las conexiones en tiempo real del usuario, en todas las instancias ([tiempo real](tiempo-real.md#códigos-de-cierre)). Repetirlo es un no-op.
 - **`data`:**
 
 | Campo | Tipo | Descripción |
@@ -88,7 +88,7 @@ Un miembro con permiso de moderación baneó a un usuario de un servidor (histor
 - **Emisor:** servidores (`discordia:events:servers`). Banear a alguien que ya está baneado no emite nada.
 - **Consumidores:**
   - voz (grupo `voz`): saca al usuario de las salas de voz **de ese servidor** (`RemoveParticipant`) y le avisa por WebSocket con `voice.access_revoked` ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md)). Las salas de otros servidores no se tocan. No deduplica por `id`: sacar de una sala a alguien que ya no está es un no-op. Si un `banned` viejo llega después de un `unbanned`, el usuario queda desconectado una vez y, como ya no es miembro, igual tiene que volver a unirse con una invitación;
-  - mensajes (previsto): deja de entregarle los mensajes de ese servidor;
+  - mensajes (grupo `mensajes`): le da de baja las suscripciones a los canales de ese servidor y le manda `messages.access_revoked` ([tiempo real](tiempo-real.md#pérdida-de-acceso-a-un-servidor)). Las de otros servidores no se tocan. Repetirlo es un no-op;
   - auditoría (prevista, historia optativa): registra la acción de moderación.
 - **`data`:**
 
@@ -117,6 +117,59 @@ Un miembro con permiso de moderación revocó el baneo de un usuario (historia 2
 | `user_id` | UUID | Usuario al que se le revocó el baneo |
 | `unbanned_by` | UUID | Miembro que revocó el baneo |
 
+### `servers.member.kicked`
+
+Un miembro con permiso de moderación (`KICK_MEMBERS`) expulsó a otro miembro de un servidor (historia 59). El usuario deja de ser miembro, pero **no** queda baneado: puede volver a unirse con una invitación válida.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que borra la membresía; expulsar a alguien que ya no es miembro no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): igual que con `servers.member.banned`. Saca al usuario de las salas de voz **de ese servidor** (`RemoveParticipant`) y le avisa por WebSocket con `voice.access_revoked` ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md)). No deduplica por `id`: sacar de una sala a alguien que ya no está es un no-op. Si el evento llega tarde, cuando el usuario ya volvió a unirse, se lo desconecta una vez y puede volver a entrar con un join normal;
+  - mensajes (grupo `mensajes`): igual que con `servers.member.banned`. Le da de baja las suscripciones a los canales de ese servidor y le manda `messages.access_revoked`;
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor del que se lo expulsó |
+| `user_id` | UUID | Usuario expulsado |
+| `kicked_by` | UUID | Miembro que lo expulsó |
+
+### `servers.member.muted`
+
+Un miembro con permiso de moderación (`MODERATE_MEMBERS`) silenció temporalmente a otro miembro de un servidor (historia 60, [ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md)). Mientras dure, no puede enviar mensajes ni hablar en los canales de voz de ese servidor, pero sigue siendo miembro y puede leer y escuchar.
+
+- **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que guarda el silencio. Silenciar a quien ya está silenciado **reemplaza** la duración y vuelve a emitir el evento con el `expires_at` nuevo.
+- **Consumidores:**
+  - voz (grupo `voz`): en las salas de voz **de ese servidor** en las que está el usuario, le quita la fuente `microphone` en vivo (LiveKit despublica la pista). Si `expires_at` ya pasó cuando llega el evento, lo ignora. No deduplica por `id`: quitar una fuente que ya no tiene es un no-op;
+  - mensajes: no lo consume. Rechaza el envío por el `muted_until` de la consulta de acceso a servidores en cada llamada;
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor en el que se lo silenció |
+| `user_id` | UUID | Usuario silenciado |
+| `muted_by` | UUID | Miembro que lo silenció |
+| `expires_at` | string (ISO 8601) | Cuándo vence el silencio |
+
+El motivo no viaja en el evento: se consulta en servidores (`GET /api/v1/servers/{server_id}/mutes`).
+
+### `servers.member.unmuted`
+
+El silencio de un miembro terminó: un moderador lo levantó antes de tiempo (CA 3) o venció la duración (CA 2). Es el mismo evento en los dos casos.
+
+- **Emisor:** servidores (`discordia:events:servers`). Al levantarlo a mano, en la misma transacción que borra el silencio. Al vencer, lo emite el job de expiración de servidores, que revisa cada 30 segundos y abre su propio span raíz (`mute.expire`) para que el evento lleve `traceparent`. Levantar un silencio que no existe no emite nada.
+- **Consumidores:**
+  - voz (grupo `voz`): en las salas de voz de ese servidor en las que está el usuario, le devuelve las fuentes configuradas (`MEDIA_ALLOWED_SOURCES`). No deduplica por `id`: devolver una fuente que ya tiene es un no-op. Si un `unmuted` viejo llega después de un `muted` nuevo, el usuario recupera el micrófono hasta que reconecte ([ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md#consecuencias));
+  - auditoría (prevista, historia optativa): registra la acción de moderación.
+- **`data`:**
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| `server_id` | UUID | Servidor |
+| `user_id` | UUID | Usuario al que se le levantó el silencio |
+| `unmuted_by` | UUID \| null | Miembro que lo levantó, o `null` si venció |
+
 ### `servers.server.suspended`
 
 Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investiga una denuncia. Ningún miembro puede usarlo mientras dure la suspensión: servidores responde `423` a todas las rutas de miembros de ese servidor, sus invitaciones dejan de funcionar y niega el acceso a voz. El contenido se conserva.
@@ -124,7 +177,7 @@ Un usuario del staff suspendió un servidor sin eliminarlo, mientras se investig
 - **Emisor:** servidores (`discordia:events:servers`). Suspender un servidor ya suspendido no emite nada.
 - **Consumidores:**
   - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, así quien estaba en una llamada queda afuera. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
-  - mensajes (previsto): deja de entregar los mensajes de ese servidor.
+  - mensajes (grupo `mensajes`): da de baja las suscripciones de todos a los canales de ese servidor y manda, por cada canal, el `error` 423 de [servidor suspendido](tiempo-real.md#servidor-suspendido). Los mensajes se conservan.
 - **`data`:**
 
 | Campo | Tipo | Descripción |
@@ -153,7 +206,7 @@ Un servidor se eliminó de forma permanente, junto con sus canales, roles, miemb
 - **Emisor:** servidores (`discordia:events:servers`). Se emite en la misma transacción que el borrado; si el servidor ya no existe no se emite nada.
 - **Consumidores:**
   - voz (grupo `voz`): cierra con `DeleteRoom` todas las salas de voz cuya metadata tiene ese `server_id`, igual que con `servers.server.suspended`. No deduplica por `id`: cerrar una sala que ya no existe es un no-op;
-  - mensajes (previsto): borra todos los mensajes de los canales de ese servidor.
+  - mensajes (grupo `mensajes`): borra de verdad (no lógicamente) los mensajes del servidor, junto con los estados de lectura de sus canales y los silencios de notificaciones. Después da de baja las suscripciones de todos a sus canales y manda `messages.access_revoked`. Repetirlo no borra nada más.
 - **`data`:**
 
 | Campo | Tipo | Descripción |

@@ -74,7 +74,7 @@ Los demás tipos los define cada servicio. Convención: `<dominio>.<cosa>`, por 
 
 Cómo viaja el contexto de traza por el WebSocket. El contrato general está en [`observabilidad.md`](observabilidad.md).
 
-- **Al conectar:** el navegador no puede mandar headers en el upgrade, así que el cliente agrega un `traceparent` nuevo a la URL: `wss://<servicio>/ws?ticket=<ticket>&traceparent=<traceparent>`. El servicio lo usa como padre del span de la conexión. Si falta o es inválido, empieza una traza nueva. **No** es motivo de rechazo.
+- **Al conectar:** el cliente conecta con `wss://<servicio>/ws?ticket=<ticket>`, sin `traceparent`, y el servicio abre una traza nueva para la conexión. Si una URL trae `traceparent` (por ejemplo, una herramienta de prueba), el servicio lo usa como padre. Si es inválido, lo ignora. **No** es motivo de rechazo.
 - **Del cliente al servidor:** cualquier frame puede llevar un `request_id` opcional (1 a 128 caracteres). El servicio lo pone en los logs y en el span de ese mensaje.
 
   ```json
@@ -122,6 +122,7 @@ Recurso: canal de voz (`channel_id`). Se suscribe a un canal quien tiene acceso 
 - **Siempre es la lista completa** del canal. Un canal vacío es `"participants": []`.
 - **`microphone_muted`:** silenciar el micrófono no genera webhook, así que fuera de la sala ese dato puede tardar hasta la próxima reconciliación. Dentro de la sala, el cliente usa los eventos de LiveKit, que son instantáneos.
 - **Los nombres no viajan:** el cliente los resuelve con `POST /api/v1/auth/users/batch`.
+- **Silencio de moderación (historia 60):** no tiene un mensaje propio. Cuando voz le quita el micrófono a un miembro silenciado, LiveKit despublica la pista y el webhook `track_unpublished` hace que aparezca con `microphone_muted: true`. El propio silenciado se entera por el evento `ParticipantPermissionsChanged` de LiveKit ([ADR 0011](adr/0011-silenciar-temporalmente-a-un-miembro.md)).
 
 ### Pérdida de acceso a un servidor
 
@@ -129,7 +130,7 @@ Recurso: canal de voz (`channel_id`). Se suscribe a un canal quien tiene acceso 
 {"type": "voice.access_revoked", "server_id": "<uuid>"}
 ```
 
-- **Cuándo se manda:** cuando el usuario pierde el acceso a un servidor mientras tiene la conexión abierta. Hoy, al recibir el evento `servers.member.banned` ([eventos](eventos.md#serversmemberbanned)). La decisión está en el [ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md).
+- **Cuándo se manda:** cuando el usuario pierde el acceso a un servidor mientras tiene la conexión abierta. Hoy, al recibir los eventos `servers.member.banned` o `servers.member.kicked` ([eventos](eventos.md#serversmemberbanned)). La decisión está en el [ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md).
 - **La conexión no se cierra:** el usuario sigue suscripto a los canales de sus otros servidores. El 4403 queda para la pérdida de acceso global (suspensión).
 - **Qué hace voz:** da de baja las suscripciones de esa conexión a los canales de ese servidor y olvida el acceso que tenía en caché. Un `subscribe` posterior a uno de esos canales responde un `error` 403.
 - **Qué hace el cliente:** deja de mostrar el servidor, sale del canal de voz si estaba en uno de ese servidor y le avisa al usuario.
@@ -172,12 +173,21 @@ Recurso: canal de texto (`channel_id`). Se suscribe a un canal quien tiene acces
 - **No cierra el socket:** igual que cualquier otro `error`. El 4403 queda para la pérdida de acceso global.
 - **Qué hace el cliente:** lo trata igual que el 423 de HTTP, mostrando el estado "servidor suspendido".
 
-### Pérdida de acceso a un servidor (reservado, **no implementado** en esta historia)
+### Pérdida de acceso a un servidor
 
 ```json
 {"type": "messages.access_revoked", "server_id": "<uuid>"}
 ```
 
-- **Estado:** el tipo de frame queda **reservado por contrato**, pero mensajes **todavía no lo emite**. La revocación de acceso en vivo sobre un socket ya abierto —el esquema de revocación por servidor que usa voz ([ADR 0007](adr/0007-revocacion-de-acceso-por-servidor.md))— está **fuera de alcance de esta historia** y queda **pendiente**.
-- **Mientras tanto, mensajes no corta la entrega en un socket abierto:** cuando el usuario pierde el acceso a un servidor (baneo, suspensión), se entera por el **403/423 de la próxima llamada HTTP** (enviar o pedir historial) y al **reconectar** (un `subscribe` a un canal sin acceso responde un `error` 403/423). No hay aviso en vivo.
-- **Cuando se implemente:** mensajes consumirá `servers.member.banned`, `servers.server.suspended` y `auth.user.suspended`, dará de baja las suscripciones de esa conexión a los canales de ese servidor y recién ahí emitirá este frame (sin cerrar el socket; el 4403 queda para la pérdida de acceso global). La entrega seguirá siendo best effort: si el socket estaba caído, el aviso se pierde (Pub/Sub no retiene) y se resuelve igual por el 403/423 de la próxima llamada HTTP.
+- **Cuándo se manda:** cuando el usuario pierde el acceso a un servidor con la conexión abierta. Mensajes consume los eventos del bus ([eventos](eventos.md)):
+  - `servers.member.banned` y `servers.member.kicked`: a ese usuario;
+  - `servers.server.deleted`: a todos los que estaban suscriptos a algún canal de ese servidor.
+- **Antes de mandarlo**, mensajes da de baja las suscripciones de la conexión a los canales de ese servidor, así que no le llega ningún mensaje más de ahí.
+- **La conexión no se cierra:** el usuario sigue suscripto a los canales de sus otros servidores. El 4403 queda para la pérdida de acceso global.
+- **Qué hace el cliente:** lo mismo que con `voice.access_revoked`. Saca el servidor de la lista y muestra un aviso neutro, porque el frame no dice por qué.
+- **Varias instancias:** el evento lo procesa una sola instancia del grupo `mensajes`, que avisa a todas por el Pub/Sub de tiempo real (`mensajes:realtime:messages`). Cada una corta sus propias conexiones, en un span `ws.revoke` que continúa la traza del evento.
+- **No se garantiza la entrega:** si el socket estaba caído en ese momento, el aviso se pierde (Pub/Sub no retiene). El cliente se entera igual por el 403 de la próxima llamada HTTP o del próximo `subscribe`.
+
+**Servidor suspendido en vivo:** con `servers.server.suspended`, mensajes da de baja las suscripciones de todos a los canales de ese servidor y manda, por cada canal, el mismo `error` 423 de [servidor suspendido](#servidor-suspendido). No manda `messages.access_revoked`, porque el servidor sigue existiendo y puede volver.
+
+**Usuario suspendido:** con `auth.user.suspended`, mensajes cierra todas las conexiones del usuario con `4403`.
