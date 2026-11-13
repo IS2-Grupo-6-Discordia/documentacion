@@ -107,3 +107,5 @@ Se usan las [variables estándar de OpenTelemetry](https://opentelemetry.io/docs
 1. Del cliente: el código que muestra en un error 5xx son los primeros 8 caracteres del `request_id`.
 2. En los logs: buscar el `request_id` que empieza con ese código. La línea trae el `trace_id`.
 3. En Grafana (Tempo): abrir la traza por `trace_id`, que muestra todos los servicios y tramos que tocó la acción, con sus tiempos.
+
+Desde el backoffice, la pantalla **Observabilidad** hace los tres pasos a la vez: se pega el código y abre la traza con sus logs, sin usuario de Grafana ([ADR 0013](adr/0013-observabilidad-en-el-backoffice.md)).
