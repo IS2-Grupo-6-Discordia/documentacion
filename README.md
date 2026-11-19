@@ -15,6 +15,14 @@ Este repo no tiene código ni setup: se lee en GitHub. Las ramas salen de `devel
 | [`tiempo-real.md`](tiempo-real.md) | Contrato común de los WebSocket: ticket, frames, cierre y reconexión |
 | [`observabilidad.md`](observabilidad.md) | Contrato de logs y trazas: headers, campos de log, niveles y variables `OTEL_*` |
 
+## UX y diseño
+
+| Recurso | Qué tiene |
+|---|---|
+| [Figma: prototipos y sistema de diseño](https://www.figma.com/design/YV4I8KiDbfm8lBaauL7dx5) | Página **Sistema de diseño** (variables, estilos de texto y componentes) y página **Prototipos** con el cliente web, la app mobile y el backoffice. [Ver el prototipo navegable](https://www.figma.com/proto/YV4I8KiDbfm8lBaauL7dx5?node-id=4-7&starting-point-node-id=4-7) |
+| [`ux/sistema-de-diseno.md`](ux/sistema-de-diseno.md) | Sistema de diseño: tokens alineados con `tailwind.config.ts`, componentes y reglas de uso |
+| [`ux/decisiones-ux.md`](ux/decisiones-ux.md) | Decisiones de UX (UX-01 a UX-14): cómo se ve, cómo se navega y por qué |
+
 ## Decisiones de arquitectura (ADRs)
 
 Cada ADR tiene contexto, decisión, alternativas descartadas y consecuencias.
