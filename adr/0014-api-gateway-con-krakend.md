@@ -71,5 +71,5 @@ Rutas públicas, sin JWT: registro y su código de verificación, login (con y s
 - **Algunas limitaciones de KrakenD CE condicionan otros diseños:** no deja elegir el status de `/readyz` (devuelve 500 en vez de 503) ni convertir una respuesta parcial en error (ADR 0010).
 - **Cold starts:** con el timeout de 3000 ms, cada ruta que despierta un backend necesita su override. Los frontends además despiertan a los servicios al abrir la app (`wake.ts`).
 - **Cada historia nueva toca el gateway:** sumar la ruta al partial del servicio, con `auth/validator`, `input_headers` y el rate limit que corresponda.
-- **Falta observabilidad en el gateway:** todavía no exporta trazas ni logs JSON (`telemetry/opentelemetry` y `telemetry/logging`). La traza hoy nace en el primer servicio ([ADR 0008](0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md)).
+- **Observabilidad:** el gateway loguea en JSON con nivel configurable y exporta trazas a través de un collector que corre en su mismo contenedor, porque KrakenD CE no puede autenticarse contra Grafana Cloud ([ADR 0008](0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md), actualización del 2026-11-19).
 - **Al subir de versión de KrakenD hay que volver a probar** que `propagate_claims` pisa los headers de identidad que manda el cliente. No está documentado explícitamente por KrakenD y se verificó a mano en la 2.6.
