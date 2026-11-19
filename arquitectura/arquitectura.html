@@ -15,7 +15,6 @@
     --muted:#5A6874;
     --teal:#24625E;
     --plum:#5D3A56;
-    --open:#A8763E;
     --stack:#39557E;
     --line:#C3CCD4;
   }
@@ -31,7 +30,7 @@
   }
   .wrap{max-width:960px;margin:0 auto;padding:48px 24px 72px}
 
-  header{max-width:52ch;margin-bottom:36px}
+  header{max-width:56ch;margin-bottom:36px}
   h1{
     font-size:clamp(1.9rem,1.3rem + 2.4vw,2.9rem);
     font-weight:700;
@@ -40,47 +39,53 @@
     margin:0 0 12px;
   }
   header p{margin:0;color:var(--muted);font-size:1.05rem}
+  header .fecha{margin-top:8px;font-size:.85rem}
 
   .scroller{overflow-x:auto;margin:0 -24px;padding:0 24px 6px}
   .diagram{display:block;width:100%;min-width:700px;height:auto}
   .diagram text{font-family:'Archivo',system-ui,sans-serif}
 
   .legend{
-    display:flex;flex-wrap:wrap;gap:20px;
+    display:flex;flex-wrap:wrap;gap:12px 20px;
     margin:14px 0 44px;color:var(--muted);font-size:.85rem;
   }
   .legend span{display:flex;align-items:center;gap:8px}
   .swatch{width:26px;height:0;border-top:2px solid var(--teal)}
-  .swatch.dash{border-top:2px dashed var(--open)}
+  .swatch.dash{border-top-style:dashed}
+  .swatch.gray{border-top-color:var(--muted)}
+  .swatch.plum{border-top-color:var(--plum)}
+  .box{width:22px;height:14px;border:1.5px dashed var(--muted);border-radius:3px}
   .legend .lang{color:var(--stack);font-weight:600}
 
+  code{font-size:.88em}
+  a{color:var(--teal)}
+
   .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;border-top:1px solid var(--line);padding-top:28px}
+  .cols > div{min-width:0}
   .cols h2{font-size:.9rem;font-weight:700;margin:0 0 14px;letter-spacing:.01em}
-  .cols .later h2{color:var(--open)}
   dl{margin:0}
   dt{font-weight:600;font-size:.93rem;margin-top:12px}
   dt:first-of-type{margin-top:0}
   dd{margin:1px 0 0;color:var(--muted);font-size:.85rem;line-height:1.45}
-  .later dt{color:var(--open)}
   dt em{font-style:normal;font-weight:500;font-size:.8rem;color:var(--stack)}
 
   .stack{margin-top:44px;border-top:1px solid var(--line);padding-top:28px}
-  .stack h2{font-size:.95rem;font-weight:700;margin:0 0 18px}
+  .stack h2{font-size:.95rem;font-weight:700;margin:0 0 6px}
+  .stack > p{margin:0 0 18px;color:var(--muted);font-size:.9rem}
   .stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
   .stack-grid h3{margin:0 0 6px;font-size:1.05rem;font-weight:700;color:var(--stack)}
   .stack-grid p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
-  .stack-grid p + p{margin-top:8px}
 
   .decisiones{margin-top:44px;border-top:1px solid var(--line);padding-top:28px}
   .decisiones h2{font-size:.95rem;font-weight:700;margin:0 0 14px}
-  .decisiones ol{margin:0;padding-left:1.15em;max-width:62ch}
-  .decisiones li{margin-bottom:11px;color:var(--muted)}
-  .decisiones li b{color:var(--ink);font-weight:600}
+  .decisiones ol{margin:0;padding-left:1.6em;max-width:70ch;columns:2;column-gap:36px}
+  .decisiones li{margin-bottom:8px;color:var(--muted);font-size:.9rem;break-inside:avoid}
 
   @media (max-width:880px){ .cols{grid-template-columns:repeat(2,1fr)} .stack-grid{grid-template-columns:1fr} }
   @media (max-width:720px){
     .wrap{padding:32px 20px 56px}
     .scroller{margin:0 -20px;padding:0 20px 6px}
+    .decisiones ol{columns:1}
   }
   @media (max-width:520px){ .cols{grid-template-columns:1fr;gap:24px} }
 </style>
@@ -90,11 +95,12 @@
 
   <header>
     <h1>Mapa del sistema</h1>
-    <p>Cuatro servicios para arrancar, tres para más adelante, dos bases de datos y dos lenguajes en el backend.</p>
+    <p>Dos clientes, un gateway y cuatro servicios. Dos lenguajes en el backend, una base por servicio y un bus de eventos entre ellos.</p>
+    <p class="fecha">Actualizado el 2026-11-19, con lo que está desplegado.</p>
   </header>
 
   <div class="scroller">
-  <svg class="diagram" viewBox="0 0 920 686" role="img" aria-label="Diagrama: el cliente en React Native entra por el Gateway, construido con KrakenD, que valida tokens contra Firebase Auth y rutea a Auth y Servidores en Python y a Mensajes y Voz en Go. Auth y Servidores usan PostgreSQL, Mensajes usa MongoDB, Voz no persiste datos. Métricas, notificaciones y monetización quedan para una segunda etapa.">
+  <svg class="diagram" viewBox="0 0 920 556" role="img" aria-label="Diagrama: el cliente (web y Android) y el backoffice, hechos con Expo, entran por HTTP al gateway KrakenD, que valida el JWT contra el JWKS de autenticación y rutea a autenticación, mensajes y servidores, en Python, y a voz, en Go. El cliente se conecta directo por WebSocket a mensajes y a voz con un ticket, y manda audio y video directo a LiveKit Cloud. Mensajes y voz consultan a servidores si un usuario tiene acceso. Autenticación y servidores usan PostgreSQL en Supabase, mensajes usa MongoDB Atlas y voz no tiene base. Autenticación y servidores publican eventos en Redis, y mensajes y voz los consumen. Todos los servicios mandan trazas y logs a Grafana Cloud.">
     <defs>
       <marker id="a-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#24625E"/>
@@ -107,208 +113,249 @@
       </marker>
     </defs>
 
-    <!-- cliente -->
-    <rect x="360" y="8" width="200" height="76" rx="10" fill="#FBFCFD" stroke="#16202B" stroke-width="1.6"/>
-    <text x="460" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Cliente</text>
-    <text x="460" y="52" text-anchor="middle" font-size="11.5" fill="#5A6874">una app para iOS, Android y web</text>
-    <text x="460" y="72" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">React Native · TypeScript · Tailwind</text>
-    <path d="M460,84 L460,104" fill="none" stroke="#16202B" stroke-width="1.6" marker-end="url(#a-teal)"/>
+    <!-- clientes -->
+    <rect x="120" y="8" width="210" height="76" rx="10" fill="#FBFCFD" stroke="#16202B" stroke-width="1.6"/>
+    <text x="225" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Backoffice</text>
+    <text x="225" y="52" text-anchor="middle" font-size="11.5" fill="#5A6874">herramientas de staff</text>
+    <text x="225" y="72" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Expo · TypeScript</text>
+
+    <rect x="370" y="8" width="430" height="76" rx="10" fill="#FBFCFD" stroke="#16202B" stroke-width="1.6"/>
+    <text x="585" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Cliente</text>
+    <text x="585" y="52" text-anchor="middle" font-size="11.5" fill="#5A6874">una sola app para web y Android</text>
+    <text x="585" y="72" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Expo (React Native) · TypeScript · NativeWind</text>
+
+    <g fill="none" stroke="#16202B" stroke-width="1.6">
+      <path d="M225,84 L225,100" marker-end="url(#a-teal)"/>
+      <path d="M585,84 L585,100" marker-end="url(#a-teal)"/>
+    </g>
+
+    <!-- conexiones directas del cliente: WebSocket a mensajes y voz, media a LiveKit -->
+    <g fill="none" stroke="#24625E" stroke-width="1.5" stroke-dasharray="5 4">
+      <path d="M800,58 L812,58 L812,212 L414,212 L414,232" marker-end="url(#a-teal)"/>
+      <path d="M770,212 L770,232" marker-end="url(#a-teal)"/>
+      <path d="M800,30 L880,30 L880,244" marker-end="url(#a-teal)"/>
+    </g>
+    <text x="846" y="118" text-anchor="middle" font-size="9.5" font-weight="600" fill="#24625E">WebSocket</text>
+    <text x="846" y="131" text-anchor="middle" font-size="9.5" fill="#24625E">con ticket</text>
 
     <!-- gateway -->
-    <rect x="120" y="112" width="680" height="66" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.8"/>
-    <text x="450" y="141" text-anchor="middle" font-size="15.5" font-weight="600" fill="#16202B">Gateway</text>
-    <text x="450" y="160" text-anchor="middle" font-size="11.5" fill="#5A6874">HTTP para todo lo demás, WebSocket para lo que pasa en vivo</text>
-    <text x="772" y="134" text-anchor="end" font-size="11.5" font-weight="600" fill="#39557E">KrakenD</text>
+    <rect x="120" y="104" width="680" height="66" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.8"/>
+    <text x="460" y="131" text-anchor="middle" font-size="15.5" font-weight="600" fill="#16202B">Gateway</text>
+    <text x="460" y="151" text-anchor="middle" font-size="11.5" fill="#5A6874">HTTP: valida el JWT con el JWKS de autenticación · rate limiting · CORS · secreto por servicio</text>
+    <text x="788" y="126" text-anchor="end" font-size="11.5" font-weight="600" fill="#39557E">KrakenD CE</text>
 
-    <!-- firebase auth (externo) -->
-    <rect x="812" y="112" width="96" height="66" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <text x="860" y="138" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Firebase</text>
-    <text x="860" y="153" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Auth</text>
-    <text x="860" y="169" text-anchor="middle" font-size="9.5" fill="#5A6874">externo</text>
-    <path d="M812,145 L806,145" fill="none" stroke="#5A6874" stroke-width="1.5" marker-end="url(#a-gray)"/>
-
-    <!-- bajadas a servicios -->
+    <!-- bajadas a servicios (con un borde del color del fondo donde cruzan el WebSocket) -->
+    <g fill="none" stroke="#E9EDF1" stroke-width="7">
+      <path d="M550,200 L550,224"/>
+      <path d="M730,200 L730,224"/>
+    </g>
     <g fill="none" stroke="#24625E" stroke-width="1.5">
-      <path d="M190,178 L190,228" marker-end="url(#a-teal)"/>
-      <path d="M370,178 L370,228" marker-end="url(#a-teal)"/>
-      <path d="M550,178 L550,228" marker-end="url(#a-teal)"/>
-      <path d="M730,178 L730,228" marker-end="url(#a-teal)"/>
+      <path d="M190,170 L190,228" marker-end="url(#a-teal)"/>
+      <path d="M370,170 L370,228" marker-end="url(#a-teal)"/>
+      <path d="M550,170 L550,228" marker-end="url(#a-teal)"/>
+      <path d="M730,170 L730,228" marker-end="url(#a-teal)"/>
     </g>
 
-    <!-- servicios base -->
-    <rect x="120" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="190" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Auth</text>
-    <text x="190" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">dueño del usuario:</text>
-    <text x="190" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">cuenta y perfil</text>
-    <text x="190" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <!-- servicios -->
+    <rect x="120" y="236" width="140" height="130" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="190" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Autenticación</text>
+    <text x="190" y="281" text-anchor="middle" font-size="11.5" fill="#5A6874">cuentas, sesiones,</text>
+    <text x="190" y="296" text-anchor="middle" font-size="11.5" fill="#5A6874">2FA y perfiles</text>
+    <text x="190" y="316" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python · FastAPI</text>
+    <path d="M134,328 L246,328" stroke="#C3CCD4" stroke-width="1"/>
+    <text x="190" y="345" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5D3A56">PostgreSQL</text>
+    <text x="190" y="358" text-anchor="middle" font-size="9.5" fill="#5A6874">Supabase, schema propio</text>
 
-    <rect x="300" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="370" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Servidores</text>
-    <text x="370" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">canales, roles y</text>
-    <text x="370" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">miembros (por user_id)</text>
-    <text x="370" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <rect x="300" y="236" width="140" height="130" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="370" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Mensajes</text>
+    <text x="370" y="281" text-anchor="middle" font-size="11.5" fill="#5A6874">historial, menciones</text>
+    <text x="370" y="296" text-anchor="middle" font-size="11.5" fill="#5A6874">y no leídos</text>
+    <text x="370" y="316" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python · FastAPI</text>
+    <path d="M314,328 L426,328" stroke="#C3CCD4" stroke-width="1"/>
+    <text x="370" y="345" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5D3A56">MongoDB</text>
+    <text x="370" y="358" text-anchor="middle" font-size="9.5" fill="#5A6874">Atlas</text>
 
-    <rect x="480" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="550" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Mensajes</text>
-    <text x="550" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">historial, adjuntos</text>
-    <text x="550" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">y reacciones</text>
-    <text x="550" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <rect x="480" y="236" width="140" height="130" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="550" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Servidores</text>
+    <text x="550" y="281" text-anchor="middle" font-size="11.5" fill="#5A6874">canales, roles,</text>
+    <text x="550" y="296" text-anchor="middle" font-size="11.5" fill="#5A6874">miembros y moderación</text>
+    <text x="550" y="316" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python · FastAPI</text>
+    <path d="M494,328 L606,328" stroke="#C3CCD4" stroke-width="1"/>
+    <text x="550" y="345" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5D3A56">PostgreSQL</text>
+    <text x="550" y="358" text-anchor="middle" font-size="9.5" fill="#5A6874">Supabase, schema propio</text>
 
-    <rect x="660" y="236" width="140" height="96" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
-    <text x="730" y="264" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Voz</text>
-    <text x="730" y="283" text-anchor="middle" font-size="11.5" fill="#5A6874">señalización y</text>
-    <text x="730" y="299" text-anchor="middle" font-size="11.5" fill="#5A6874">audio en vivo</text>
-    <text x="730" y="320" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
+    <rect x="660" y="236" width="140" height="130" rx="10" fill="#FBFCFD" stroke="#24625E" stroke-width="1.6"/>
+    <text x="730" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">Voz</text>
+    <text x="730" y="281" text-anchor="middle" font-size="11.5" fill="#5A6874">canales de voz y</text>
+    <text x="730" y="296" text-anchor="middle" font-size="11.5" fill="#5A6874">llamadas 1 a 1</text>
+    <text x="730" y="316" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go · chi</text>
+    <path d="M674,328 L786,328" stroke="#C3CCD4" stroke-width="1"/>
+    <text x="730" y="345" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Sin base propia</text>
+    <text x="730" y="358" text-anchor="middle" font-size="9.5" fill="#5A6874">el estado está en LiveKit</text>
 
-    <!-- servidores -> auth: referencia interna por user_id, no comparten tabla -->
-    <path d="M300,254 L264,254" fill="none" stroke="#5A6874" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#a-gray)"/>
-    <text x="282" y="245" text-anchor="middle" font-size="8.5" fill="#5A6874">user_id</text>
+    <!-- consultas síncronas de acceso a servidores -->
+    <g fill="none" stroke="#5A6874" stroke-width="1.3">
+      <path d="M440,290 L476,290" marker-end="url(#a-gray)"/>
+      <path d="M660,290 L624,290" marker-end="url(#a-gray)"/>
+    </g>
+    <text x="460" y="283" text-anchor="middle" font-size="8.5" fill="#5A6874">acceso</text>
+    <text x="640" y="283" text-anchor="middle" font-size="8.5" fill="#5A6874">acceso</text>
 
-    <!-- servicios -> bases -->
+    <!-- externos de autenticación y servidores -->
+    <rect x="8" y="246" width="96" height="80" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="56" y="270" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5A6874">Cloudflare R2</text>
+    <text x="56" y="287" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5A6874">Brevo</text>
+    <text x="56" y="304" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5A6874">Google</text>
+    <text x="56" y="319" text-anchor="middle" font-size="9" fill="#5A6874">externos</text>
+    <path d="M120,286 L108,286" fill="none" stroke="#5A6874" stroke-width="1.3" marker-end="url(#a-gray)"/>
+
+    <!-- LiveKit Cloud -->
+    <rect x="826" y="248" width="86" height="86" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="869" y="270" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">LiveKit</text>
+    <text x="869" y="284" text-anchor="middle" font-size="11.5" font-weight="600" fill="#5A6874">Cloud</text>
+    <text x="869" y="301" text-anchor="middle" font-size="9.5" fill="#5A6874">audio y video</text>
+    <text x="869" y="313" text-anchor="middle" font-size="9.5" fill="#5A6874">directo desde</text>
+    <text x="869" y="325" text-anchor="middle" font-size="9.5" fill="#5A6874">el cliente</text>
+    <path d="M800,300 L822,300" fill="none" stroke="#5A6874" stroke-width="1.3" marker-end="url(#a-gray)"/>
+
+    <!-- eventos -->
     <g fill="none" stroke="#5D3A56" stroke-width="1.5">
-      <path d="M190,332 C190,360 205,362 230,392" marker-end="url(#a-plum)"/>
-      <path d="M370,332 C370,360 350,362 330,392" marker-end="url(#a-plum)"/>
-      <path d="M550,332 C550,360 553,362 555,392" marker-end="url(#a-plum)"/>
+      <path d="M190,366 L190,400" marker-end="url(#a-plum)"/>
+      <path d="M550,366 L550,400" marker-end="url(#a-plum)"/>
+      <path d="M370,404 L370,370" marker-end="url(#a-plum)"/>
+      <path d="M730,404 L730,370" marker-end="url(#a-plum)"/>
     </g>
-    <path d="M730,332 C730,360 740,362 745,392" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="196" y="389" font-size="8.5" fill="#5D3A56">publica</text>
+    <text x="556" y="389" font-size="8.5" fill="#5D3A56">publica</text>
+    <text x="376" y="389" font-size="8.5" fill="#5D3A56">consume</text>
+    <text x="736" y="389" font-size="8.5" fill="#5D3A56">consume</text>
 
-    <!-- bases -->
-    <rect x="140" y="396" width="280" height="100" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
-    <text x="280" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">PostgreSQL</text>
-    <text x="280" y="448" text-anchor="middle" font-size="11.5" fill="#5A6874">
-      <tspan x="280" dy="0">usuarios (Auth) ·</tspan>
-      <tspan x="280" dy="16">servidores, canales</tspan>
-      <tspan x="280" dy="16">y roles (Servidores)</tspan>
-    </text>
+    <!-- Redis -->
+    <rect x="120" y="404" width="680" height="54" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
+    <text x="460" y="426" text-anchor="middle" font-size="14" font-weight="600" fill="#16202B">Redis <tspan font-weight="500" fill="#5A6874">· Upstash</tspan></text>
+    <text x="460" y="445" text-anchor="middle" font-size="11.5" fill="#5A6874">Streams como bus de eventos (con outbox) · Pub/Sub entre instancias · tickets y presencia</text>
 
-    <rect x="450" y="396" width="210" height="100" rx="10" fill="#FBFCFD" stroke="#5D3A56" stroke-width="1.6"/>
-    <text x="555" y="428" text-anchor="middle" font-size="15" font-weight="600" fill="#16202B">MongoDB</text>
-    <text x="555" y="448" text-anchor="middle" font-size="11.5" fill="#5A6874">mensajes y adjuntos</text>
-
-    <rect x="690" y="396" width="110" height="100" rx="10" fill="none" stroke="#C3CCD4" stroke-width="1.5" stroke-dasharray="5 5"/>
-    <text x="745" y="424" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Sin base</text>
-    <text x="745" y="440" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">propia</text>
-    <text x="745" y="460" text-anchor="middle" font-size="9.5" fill="#5A6874">
-      <tspan x="745" dy="0">el audio no</tspan>
-      <tspan x="745" dy="13">se guarda</tspan>
-    </text>
-
-    <!-- separador fase 2 -->
-    <path d="M120,540 L800,540" stroke="#C3CCD4" stroke-width="1" stroke-dasharray="4 6"/>
-    <text x="120" y="570" font-size="12.5" font-weight="600" fill="#A8763E">Más adelante, cuando haya gente usándolo</text>
-
-    <!-- fase 2 -->
-    <rect x="120" y="584" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="226" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Métricas</text>
-    <text x="226" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">uso y salud del sistema</text>
-    <text x="226" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
-
-    <rect x="353" y="584" width="213" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="459" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Notificaciones</text>
-    <text x="459" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">push, mail y menciones</text>
-    <text x="459" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Go</text>
-
-    <rect x="586" y="584" width="214" height="80" rx="10" fill="none" stroke="#A8763E" stroke-width="1.5" stroke-dasharray="6 5"/>
-    <text x="693" y="612" text-anchor="middle" font-size="14.5" font-weight="600" fill="#A8763E">Monetización</text>
-    <text x="693" y="630" text-anchor="middle" font-size="11.5" fill="#5A6874">planes y cobros</text>
-    <text x="693" y="651" text-anchor="middle" font-size="11.5" font-weight="600" fill="#39557E">Python</text>
+    <!-- observabilidad -->
+    <rect x="120" y="490" width="680" height="52" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
+    <text x="460" y="512" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5A6874">Grafana Cloud · Tempo y Loki</text>
+    <text x="460" y="530" text-anchor="middle" font-size="11" fill="#5A6874">Todos los servicios exportan trazas y logs por OTLP. El backoffice los consulta a través de autenticación.</text>
   </svg>
   </div>
 
   <div class="legend">
-    <span><i class="swatch"></i>Primera versión</span>
-    <span><i class="swatch dash"></i>Segunda etapa</span>
-    <span><i class="lang">Aa</i>Lenguaje o tecnología propuesta</span>
-    <span><i class="swatch dash" style="border-top-color:#5A6874"></i>Servicio externo</span>
+    <span><i class="swatch"></i>HTTP por el gateway</span>
+    <span><i class="swatch dash"></i>Conexión directa (WebSocket o LiveKit)</span>
+    <span><i class="swatch gray"></i>Llamada entre servicios</span>
+    <span><i class="swatch plum"></i>Eventos por Redis Streams</span>
+    <span><i class="box"></i>Servicio externo</span>
+    <span><i class="lang">Aa</i>Lenguaje o framework</span>
   </div>
 
   <section class="cols">
     <div>
-      <h2>Servicios base</h2>
+      <h2>Clientes y gateway</h2>
       <dl>
-        <dt>Gateway <em>KrakenD</em></dt>
-        <dd>Punto de entrada único. Rutea a cada servicio y valida el token que emite Firebase Auth antes de dejar pasar la request.</dd>
-        <dt>Auth <em>Python</em></dt>
-        <dd>La autenticación (login, registro, tokens) corre en Firebase Auth. Este servicio es el dueño del usuario: guarda la cuenta y el perfil (nombre, foto, descripción, estado). Los demás servicios nunca duplican estos datos, solo referencian el <code>user_id</code>.</dd>
-        <dt>Servidores y canales <em>Python</em></dt>
-        <dd>Crear servidores, canales, invitaciones, membresías y roles internos de cada servidor. La membresía guarda <code>user_id</code> + rol; el perfil del miembro se resuelve consultando a Auth.</dd>
-        <dt>Mensajes <em>Go</em></dt>
-        <dd>Enviar, editar, borrar, historial paginado, adjuntos y reacciones.</dd>
-        <dt>Voz <em>Go</em></dt>
-        <dd>Quién está en cada canal, señalización WebRTC y el ruteo del audio.</dd>
+        <dt>Cliente <em>Expo · TypeScript</em></dt>
+        <dd>Una sola base de código para web y Android. La web se sirve desde Cloudflare Pages y la APK se compila con EAS en cada merge a <code>main</code>.</dd>
+        <dt>Backoffice <em>Expo · TypeScript</em></dt>
+        <dd>Para el staff: usuarios, servidores, reportes, métricas, trazas y logs. Se sirve desde Cloudflare Pages.</dd>
+        <dt>Gateway <em>KrakenD CE</em></dt>
+        <dd>Única entrada HTTP. Valida el JWT, aplica rate limiting y pasa <code>X-User-Id</code>, <code>X-User-Role</code> y el secreto interno de cada servicio. El tiempo real y el audio no pasan por acá.</dd>
       </dl>
     </div>
 
-    <div class="later">
-      <h2>Más adelante</h2>
+    <div>
+      <h2>Servicios</h2>
       <dl>
-        <dt>Métricas <em>Python</em></dt>
-        <dd>Usuarios activos, mensajes por canal, errores y latencia.</dd>
-        <dt>Notificaciones <em>Go</em></dt>
-        <dd>Push y mail. Escucha los eventos de Mensajes y Voz.</dd>
-        <dt>Monetización <em>Python</em></dt>
-        <dd>Planes, límites por plan y cobros.</dd>
+        <dt>Autenticación <em>Python</em></dt>
+        <dd>Cuentas, login con contraseña, Google y 2FA, refresh, recupero, perfiles y presencia. Firma los JWT (RS256) y publica su JWKS.</dd>
+        <dt>Servidores <em>Python</em></dt>
+        <dd>Servidores, canales, roles y permisos, invitaciones, baneos, silencios, reportes y auditoría. Les responde a mensajes y a voz si alguien puede entrar a un canal.</dd>
+        <dt>Mensajes <em>Python</em></dt>
+        <dd>Envío, edición y borrado, historial por cursor, menciones, no leídos y notificaciones. Reparte en vivo por WebSocket.</dd>
+        <dt>Voz <em>Go</em></dt>
+        <dd>Canales de voz y llamadas 1 a 1 sobre LiveKit: tokens de sala, presencia en vivo y corte de acceso al banear o silenciar.</dd>
       </dl>
     </div>
 
     <div>
       <h2>Datos</h2>
       <dl>
-        <dt>PostgreSQL</dt>
-        <dd>Todo lo relacional y con permisos. Auth y Servidores usan la misma instancia pero cada uno es dueño de sus tablas: Auth tiene cuentas y perfiles, Servidores tiene servidores, canales, roles y membresías (que referencian el <code>user_id</code> de Auth, sin duplicar su perfil).</dd>
-        <dt>MongoDB</dt>
-        <dd>Mensajes. Mucho volumen, forma variable y consultas casi siempre por canal y fecha.</dd>
+        <dt>PostgreSQL <em>Supabase</em></dt>
+        <dd>Autenticación y servidores, cada uno con su schema y un usuario que solo puede tocar el suyo.</dd>
+        <dt>MongoDB <em>Atlas</em></dt>
+        <dd>Mensajes, indexados por canal y fecha.</dd>
+        <dt>Redis <em>Upstash</em></dt>
+        <dd>No guarda datos de negocio: eventos entre servicios, Pub/Sub entre instancias, tickets de WebSocket y presencia.</dd>
+        <dt>Cloudflare R2</dt>
+        <dd>Avatares, íconos y banners. En la base solo queda la URL.</dd>
       </dl>
     </div>
 
     <div>
-      <h2>Gestión</h2>
+      <h2>Infraestructura</h2>
       <dl>
-        <dt>GitHub Projects</dt>
-        <dd>Un tablero con una etiqueta por servicio, para que se vea qué toca a quién.</dd>
+        <dt>Render</dt>
+        <dd>Los cuatro servicios y el gateway, como contenedores Docker que se despliegan desde <code>main</code>.</dd>
+        <dt>LiveKit Cloud</dt>
+        <dd>Media server y TURN. Es la fuente de verdad de quién está en cada sala.</dd>
+        <dt>Grafana Cloud</dt>
+        <dd>Trazas en Tempo y logs en Loki, con un <code>trace_id</code> que cruza HTTP, eventos y WebSocket.</dd>
+        <dt>Brevo y Google</dt>
+        <dd>Mails transaccionales y login federado, los dos desde autenticación.</dd>
       </dl>
     </div>
   </section>
 
   <section class="stack">
-    <h2>Por qué cada lenguaje donde está</h2>
+    <h2>Por qué cada tecnología donde está</h2>
+    <p>El detalle y las alternativas descartadas están en los <a href="../adr/0014-api-gateway-con-krakend.md">ADR 0014</a> y <a href="../adr/0015-lenguajes-y-bases-de-datos.md">0015</a>.</p>
     <div class="stack-grid">
       <div>
         <h3>KrakenD</h3>
-        <p>El Gateway no es un servicio a medida: es una API gateway declarativa, configurada por archivo en vez de código propio para mantener.</p>
-        <p>Valida el token de Firebase Auth en el borde y rutea al resto de los servicios, así ninguno tiene que reimplementar esa verificación.</p>
-      </div>
-      <div>
-        <h3>Firebase Auth</h3>
-        <p>La autenticación (alta de cuentas, login, recuperación de contraseña, tokens) se delega a Firebase Auth en vez de escribirla desde cero.</p>
-        <p>El servicio Auth propio se queda con lo que Firebase no resuelve, y es el dueño de esos datos: perfil de usuario, cuenta dentro de Discordia. Servidores solo guarda el <code>user_id</code> como referencia — nunca copia el perfil.</p>
-      </div>
-      <div>
-        <h3>Go</h3>
-        <p>Mensajes y Voz. Son las piezas que sostienen miles de conexiones abiertas al mismo tiempo y reparten cada mensaje entre todos los que están mirando el canal.</p>
-        <p>Las goroutines hacen eso barato y el binario compilado arranca solo, sin runtime alrededor.</p>
+        <p>Un gateway declarativo: todo sale de la configuración, sin código propio que mantener. Cada servicio tiene su archivo de rutas, así que dos personas pueden sumar endpoints sin pisarse.</p>
       </div>
       <div>
         <h3>Python</h3>
-        <p>Servidores y canales, y después Métricas y Monetización. Es donde hay reglas de negocio, validaciones y permisos: se escribe rápido, se lee fácil y el tráfico es de picos cortos, no de conexiones sostenidas.</p>
-        <p>FastAPI si querés async y tipos; Django si preferís traer el admin y el ORM ya resueltos.</p>
+        <p>Autenticación, servidores y mensajes son reglas de negocio, validaciones y permisos sobre I/O. FastAPI genera el OpenAPI desde el código y los tres comparten la misma estructura.</p>
       </div>
       <div>
-        <h3>React Native + TypeScript</h3>
-        <p>Una sola base de código para iOS, Android y web con React Native Web. Los tipos del cliente pueden generarse desde el esquema de la API para que no se desincronicen.</p>
-        <p>Tailwind en React Native va a través de NativeWind, que traduce las clases a estilos nativos. Las mismas clases sirven en la versión web.</p>
+        <h3>Go</h3>
+        <p>Voz usa el SDK oficial de LiveKit, sostiene WebSockets abiertos con goroutines baratas y es un binario chico que arranca rápido después de dormirse en Render.</p>
+      </div>
+      <div>
+        <h3>PostgreSQL</h3>
+        <p>Cuentas y servidores son relacionales: emails únicos, un miembro por servidor, permisos que se calculan con joins. El outbox se guarda en la misma transacción que el cambio.</p>
+      </div>
+      <div>
+        <h3>MongoDB</h3>
+        <p>Los mensajes se leen casi siempre como "los últimos N de un canal", sin joins, y el documento cambia de forma (menciones, ediciones, borrado lógico).</p>
+      </div>
+      <div>
+        <h3>Expo + TypeScript</h3>
+        <p>Una sola base para web y Android con React Native Web. NativeWind traduce las clases de Tailwind a estilos nativos, y las mismas sirven en la web.</p>
       </div>
     </div>
   </section>
 
   <section class="decisiones">
-    <h2>Lo que falta decidir</h2>
+    <h2>Decisiones de arquitectura</h2>
     <ol>
-      <li><b>¿Arrancar con los dos lenguajes o con uno?</b> Dos backends significan dos toolchains, dos pipelines de CI y dos formas de hacer todo. Una salida es empezar todo en Python y pasar a Go solo Mensajes y Voz cuando el volumen lo justifique.</li>
-      <li><b>Dónde vive el estado en vivo.</b> Presencia, typing y quién está en cada canal de voz cambian todo el tiempo y no van a ninguna de las dos bases. Va a hacer falta algo en memoria, tipo Redis.</li>
-      <li><b>Voz: SFU propio o proveedor.</b> Montar mediasoup o LiveKit da control y cuesta trabajo; usar un servicio externo te saca el problema de encima y te ata a su precio.</li>
-      <li><b>Los mensajes en Mongo necesitan un índice por canal y fecha desde el día uno.</b> Sin eso el historial se vuelve lento apenas crezca.</li>
-      <li><b>Cómo se enteran los servicios entre sí.</b> Cuando exista Notificaciones va a necesitar escuchar lo que pasa en Mensajes; ahí conviene una cola en vez de llamadas directas.</li>
+      <li><a href="../adr/0001-bus-de-eventos-redis-streams.md">Bus de eventos único con Redis Streams</a></li>
+      <li><a href="../adr/0002-voz-con-livekit.md">Voz con LiveKit</a></li>
+      <li><a href="../adr/0003-voz-consulta-sincrona-a-servidores.md">Consulta síncrona de voz a servidores</a></li>
+      <li><a href="../adr/0004-voz-sin-base-de-datos.md">Voz sin base de datos</a></li>
+      <li><a href="../adr/0005-voz-resiliencia-ante-servidores.md">Resiliencia de voz ante servidores</a></li>
+      <li><a href="../adr/0006-tiempo-real-websocket-por-servicio.md">WebSocket por servicio con ticket del gateway</a></li>
+      <li><a href="../adr/0007-revocacion-de-acceso-por-servidor.md">Revocación de acceso por servidor en voz</a></li>
+      <li><a href="../adr/0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md">Trazabilidad con OpenTelemetry y Grafana Cloud</a></li>
+      <li><a href="../adr/0009-tiempo-real-de-mensajes.md">Tiempo real de mensajes</a></li>
+      <li><a href="../adr/0010-health-checks-livez-y-readyz.md">Health checks <code>/livez</code> y <code>/readyz</code></a></li>
+      <li><a href="../adr/0011-silenciar-temporalmente-a-un-miembro.md">Silenciar temporalmente a un miembro</a></li>
+      <li><a href="../adr/0012-filtro-de-palabras-prohibidas.md">Filtro de palabras prohibidas</a></li>
+      <li><a href="../adr/0013-observabilidad-en-el-backoffice.md">Trazas y logs en el backoffice</a></li>
+      <li><a href="../adr/0014-api-gateway-con-krakend.md">API Gateway con KrakenD CE</a></li>
+      <li><a href="../adr/0015-lenguajes-y-bases-de-datos.md">Lenguajes y bases de datos</a></li>
     </ol>
   </section>
 
