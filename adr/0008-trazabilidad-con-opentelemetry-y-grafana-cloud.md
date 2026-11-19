@@ -70,3 +70,16 @@ En Grafana Cloud casi todas las trazas aparecían como `<root span not yet recei
   - El `X-Request-Id` sigue naciendo en el cliente, y es el código que se muestra al usuario para soporte.
   - Los servicios siguen aceptando `traceparent` si llega (por ejemplo, entre servicios o desde una herramienta), y el gateway lo sigue reenviando.
 - **Lo que se pierde:** nada. Dos pedidos del mismo cliente nunca compartieron traza, porque se generaba un `traceparent` nuevo por pedido.
+
+## Actualización 2026-11-19: el gateway exporta trazas con un collector en su contenedor
+
+El enunciado pide que **cada servicio** tenga observabilidad y log estructurado con niveles configurables, y el gateway no tenía ninguna de las dos cosas. El exporter OTLP de KrakenD CE sigue sin admitir el header `Authorization` de Grafana Cloud (es de la edición Enterprise).
+
+- **Cambio:** la imagen del gateway trae un **OpenTelemetry Collector** (distribución core) que corre en el mismo contenedor que KrakenD. KrakenD exporta a `127.0.0.1:4318` y el collector reenvía a Grafana Cloud con el header de autenticación. No es otro servicio de Render: es un segundo proceso que arranca el entrypoint, solo si está `OTEL_EXPORTER_OTLP_ENDPOINT`.
+- **Mismas variables que los demás servicios:** `OTEL_EXPORTER_OTLP_ENDPOINT` y `OTEL_EXPORTER_OTLP_HEADERS`.
+- **El gateway pasa a ser la raíz de las trazas HTTP:** crea el span de cada request y le pasa su `traceparent` al backend. Las trazas del WebSocket siguen naciendo en mensajes y voz, porque no pasan por el gateway ([ADR 0006](0006-tiempo-real-websocket-por-servicio.md)).
+- **Solo trazas:** sin métricas, para no gastar cuota, y sin `/livez` ni `/readyz`.
+- **Logs:** JSON por stdout (`telemetry/logging` + `telemetry/logstash`), con nivel por `LOG_LEVEL`. No van a Loki: el collector solo recibe OTLP y KrakenD escribe sus logs en stdout. La línea de acceso de cada request sigue en texto plano, porque KrakenD CE no deja cambiar su formato.
+- **Memoria:** KrakenD solo ya usa unos 430 MB de los 512 MB del plan free de Render. El collector tiene un tope (`GOMEMLIMIT=48MiB` y `memory_limiter`) y suma unos 30 MB.
+
+Se revisa así la alternativa descartada del collector propio: el motivo para descartarlo era desplegar y mantener despierto otro servicio, y correrlo dentro del contenedor del gateway evita ese costo. Los demás servicios siguen exportando directo, sin collector.

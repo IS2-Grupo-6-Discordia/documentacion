@@ -18,7 +18,7 @@ Contrato común de logs y trazas de todos los servicios, incluido mensajes. La d
   - **Siempre** se devuelve en la respuesta, también en los errores.
   - Se reenvía en toda llamada a otro servicio.
 - **Llamadas entre servicios:** el cliente HTTP instrumentado inyecta `traceparent` solo. `X-Request-Id` se reenvía a mano.
-- **Gateway:** reenvía los tres headers a todos los backends. El CORS los permite y expone `X-Request-Id`, así el navegador puede leerlo. No aparece como span: el exporter de KrakenD CE no puede autenticarse contra Grafana Cloud.
+- **Gateway:** reenvía `X-Request-Id` a todos los backends. El CORS permite los tres headers y expone `X-Request-Id`, así el navegador puede leerlo. Con `OTEL_EXPORTER_OTLP_ENDPOINT` definida, el gateway crea el span raíz de cada request HTTP y le pasa su `traceparent` al backend. Exporta por un collector que corre en su mismo contenedor, porque el exporter de KrakenD CE no puede autenticarse contra Grafana Cloud ([ADR 0008](adr/0008-trazabilidad-con-opentelemetry-y-grafana-cloud.md), actualización del 2026-11-19).
 - **Navegador:** el cliente genera solo el `X-Request-Id` de cada pedido. **No** manda `traceparent`: no exporta spans, y un padre que nunca llega a Tempo hace que la traza se vea como `<root span not yet received>`. Si el pedido se reintenta (por ejemplo, después de renovar el token), mantiene el mismo `X-Request-Id`.
 
 ## Eventos
@@ -40,6 +40,8 @@ Dentro de un servicio, lo que se reparte entre instancias por Redis Pub/Sub tamb
 ## Logs
 
 Una línea por evento, en JSON, por stdout. Si está `OTEL_EXPORTER_OTLP_ENDPOINT`, autenticación, servidores, mensajes y voz también los mandan por OTLP a Loki, con el `trace_id`, para saltar de una traza a sus logs en Grafana. Los del exporter no se exportan.
+
+El gateway también loguea una línea JSON por evento en stdout, con el nivel de `LOG_LEVEL`, pero con los campos de KrakenD (`@timestamp`, `level`, `message`, `module`) y sin mandarlos a Loki. Los campos de abajo son los de los cuatro servicios.
 
 ### Campos
 
