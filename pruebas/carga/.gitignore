@@ -1,0 +1,4 @@
+# .env generados con secretos locales
+entorno/env/
+# Resumenes de cada corrida (los que entran al informe se copian a resultados/ a mano)
+salidas/

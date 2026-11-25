@@ -1,0 +1,148 @@
+# Entorno aislado para las pruebas de carga (issue #135).
+#
+# Levanta gateway, autenticacion, servidores, dos instancias de mensajes, sus bases y Redis con
+# una red y un nombre de proyecto propios, para no chocar con un entorno de desarrollo que ya
+# este corriendo (discordia-net, puertos 5432/5433/8082...). Las bases no publican puertos.
+#
+# Diferencias con el compose de desarrollo de cada servicio, a proposito:
+#   - Sin --reload ni bind mount del codigo: se corre la imagen tal cual el Dockerfile, como en
+#     el deploy.
+#   - Dos instancias de mensajes detras del mismo nombre ("mensajes") para probar el fan-out entre
+#     instancias por Redis Pub/Sub.
+#   - Rate limits del gateway altos (ver generar-env.sh): todo el trafico de k6 sale de una IP.
+#
+# Uso (desde esta carpeta):
+#   REPOS_DIR=/ruta/a/los/repos ./generar-env.sh
+#   REPOS_DIR=/ruta/a/los/repos docker compose -p discordia-carga up -d --build
+#
+# REPOS_DIR es la carpeta que contiene gateway/, microservicio-autenticacion/, etc.
+
+name: discordia-carga
+
+x-python-service: &python-service
+  restart: unless-stopped
+  networks: [carga-net]
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [carga-net]
+
+  auth-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: discordia
+      POSTGRES_PASSWORD: carga
+      POSTGRES_DB: discordia_auth
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U discordia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [carga-net]
+
+  servidores-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: discordia
+      POSTGRES_PASSWORD: carga
+      POSTGRES_DB: discordia_servidores
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U discordia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [carga-net]
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    # El healthcheck lanza mongosh (un proceso Node) y cada ejecución cuesta CPU dentro del
+    # contenedor: cada 5 s inflaba el uso medido de Mongo (16% del contenedor contra 2% de mongod).
+    # Rápido al arrancar (start_interval) y espaciado después, para no ensuciar la medición.
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 60s
+      start_interval: 2s
+      start_period: 60s
+      timeout: 5s
+      retries: 10
+    networks: [carga-net]
+
+  autenticacion:
+    <<: *python-service
+    build: ${REPOS_DIR:?definir REPOS_DIR}/microservicio-autenticacion
+    env_file: [env/autenticacion.env]
+    depends_on:
+      auth-db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  # SERVIDORES_WORKERS (1 por defecto, como el Dockerfile) permite medir el efecto de correr varios
+  # procesos de uvicorn. Es seguro: el relay del outbox toma filas con SKIP LOCKED y el job de
+  # silencios bloquea las filas que toca, así que varios procesos no se pisan.
+  servidores:
+    <<: *python-service
+    build: ${REPOS_DIR:?definir REPOS_DIR}/microservicio-servidores
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8081 --workers ${SERVIDORES_WORKERS:-1}
+    env_file: [env/servidores.env]
+    depends_on:
+      servidores-db: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  # Las dos instancias comparten el alias "mensajes": el gateway resuelve ese nombre y Docker
+  # reparte entre ambas. Cada una publica su propio puerto para que k6 abra el WebSocket contra
+  # una instancia concreta.
+  mensajes-1:
+    <<: *python-service
+    build: ${REPOS_DIR:?definir REPOS_DIR}/microservicio-mensajes
+    image: discordia-carga-mensajes
+    env_file: [env/mensajes.env]
+    environment:
+      REALTIME_PUBLIC_URL: ws://localhost:18083
+      EVENTS_CONSUMER_NAME: mensajes-1
+    ports: ["18083:8083"]
+    depends_on:
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    networks:
+      carga-net:
+        aliases: [mensajes]
+
+  mensajes-2:
+    <<: *python-service
+    build: ${REPOS_DIR:?definir REPOS_DIR}/microservicio-mensajes
+    image: discordia-carga-mensajes
+    env_file: [env/mensajes.env]
+    environment:
+      REALTIME_PUBLIC_URL: ws://localhost:18093
+      EVENTS_CONSUMER_NAME: mensajes-2
+    ports: ["18093:8083"]
+    depends_on:
+      mensajes-1: { condition: service_started }
+    networks:
+      carga-net:
+        aliases: [mensajes]
+
+  gateway:
+    restart: unless-stopped
+    build: ${REPOS_DIR:?definir REPOS_DIR}/gateway
+    env_file: [env/gateway.env]
+    ports: ["18080:8080"]
+    depends_on: [autenticacion, servidores, mensajes-1, mensajes-2]
+    networks: [carga-net]
+
+networks:
+  carga-net:
+    name: discordia-carga-net
