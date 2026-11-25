@@ -2,7 +2,7 @@
 
 Documentación transversal de Discordia: el enunciado, la arquitectura, las decisiones de diseño (ADRs) y los contratos que comparten todos los servicios. Lo propio de cada servicio (endpoints, variables, cómo levantarlo) está en el README de su repo.
 
-Este repo no tiene código ni setup: se lee en GitHub. Las ramas salen de `develop` y los PRs van a `develop`.
+Este repo no tiene código ni setup, salvo las pruebas de carga en [`pruebas/carga/`](pruebas/carga/): se lee en GitHub. Las ramas salen de `develop` y los PRs van a `develop`.
 
 ## Contenido
 
@@ -14,6 +14,8 @@ Este repo no tiene código ni setup: se lee en GitHub. Las ramas salen de `devel
 | [`eventos/sobre.schema.json`](eventos/sobre.schema.json) | JSON Schema del sobre de eventos. Los tests de contrato de cada servicio usan una copia |
 | [`tiempo-real.md`](tiempo-real.md) | Contrato común de los WebSocket: ticket, frames, cierre y reconexión |
 | [`observabilidad.md`](observabilidad.md) | Contrato de logs y trazas: headers, campos de log, niveles y variables `OTEL_*` |
+| [`pruebas/carga/tests.md`](pruebas/carga/tests.md) | Pruebas de carga y estrés con k6: entorno aislado, datos de prueba, escenarios y cómo correrlos y analizarlos |
+| [`pruebas/carga/informe.md`](pruebas/carga/informe.md) | Informe de las pruebas de carga y estrés: latencias, errores, throughput, cuellos de botella y acciones |
 
 ## UX y diseño
 
