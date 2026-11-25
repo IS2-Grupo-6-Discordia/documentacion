@@ -68,11 +68,11 @@ Cómo se ve Discordia, cómo se navega y por qué. Cada decisión sigue el forma
 
 **Consecuencias.** Un cambio de diseño llega a las dos plataformas a la vez, y el sistema de diseño es uno solo. Los detalles propios de cada plataforma (hover, tooltips, mantener apretado) se resuelven con condiciones de `Platform.OS`.
 
-## UX-05: Backoffice como app aparte, organizada por expedientes
+## UX-05: Backoffice, organizada por expedientes
 
 **Contexto.** El staff de la plataforma tiene un rol global, independiente de los roles de cada servidor, y toma decisiones con impacto sobre cuentas ajenas: suspender, reactivar, revisar reportes.
 
-**Decisión.** El backoffice es **otra app** (`discordia-backoffice`) con el mismo sistema de diseño y una barra superior con cinco secciones: Usuarios, Servidores, Reportes, Métricas y Observabilidad. Las listas llevan al **expediente** del usuario o del servidor, que reúne su historial, y es ahí donde se toman las medidas. Una etiqueta "Staff" al lado del logo deja claro en qué app estás.
+**Decisión.** El backoffice, (`discordia-backoffice`) con el mismo sistema de diseño y una barra superior con cinco secciones: Usuarios, Servidores, Reportes, Métricas y Observabilidad. Las listas llevan al **expediente** del usuario o del servidor, que reúne su historial, y es ahí donde se toman las medidas. Una etiqueta "Staff" al lado del logo deja claro en qué app estás.
 
 **Alternativas descartadas.**
 - *Sección de administración dentro del cliente:* mezcla dos contextos de uso y aumenta el riesgo de que un usuario común vea o toque herramientas de staff.
