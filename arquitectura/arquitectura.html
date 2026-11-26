@@ -96,11 +96,11 @@
   <header>
     <h1>Mapa del sistema</h1>
     <p>Dos clientes, un gateway y cuatro servicios. Dos lenguajes en el backend, una base por servicio y un bus de eventos entre ellos.</p>
-    <p class="fecha">Actualizado el 2026-11-19, con lo que está desplegado.</p>
+    <p class="fecha">Actualizado el 2026-11-25, con lo que está desplegado. El detalle, nivel por nivel, está en los <a href="c4.md">diagramas C4</a>.</p>
   </header>
 
   <div class="scroller">
-  <svg class="diagram" viewBox="0 0 920 556" role="img" aria-label="Diagrama: el cliente (web y Android) y el backoffice, hechos con Expo, entran por HTTP al gateway KrakenD, que valida el JWT contra el JWKS de autenticación y rutea a autenticación, mensajes y servidores, en Python, y a voz, en Go. El cliente se conecta directo por WebSocket a mensajes y a voz con un ticket, y manda audio y video directo a LiveKit Cloud. Mensajes y voz consultan a servidores si un usuario tiene acceso. Autenticación y servidores usan PostgreSQL en Supabase, mensajes usa MongoDB Atlas y voz no tiene base. Autenticación y servidores publican eventos en Redis, y mensajes y voz los consumen. Todos los servicios mandan trazas y logs a Grafana Cloud.">
+  <svg class="diagram" viewBox="0 0 920 556" role="img" aria-label="Diagrama: el cliente (web y Android) y el backoffice, hechos con Expo, entran por HTTP al gateway KrakenD, que valida el JWT contra el JWKS de autenticación y rutea a autenticación, mensajes y servidores, en Python, y a voz, en Go. El cliente se conecta directo por WebSocket a mensajes y a voz con un ticket, y manda audio y video directo a LiveKit Cloud. Mensajes y voz consultan a servidores si un usuario tiene acceso. Autenticación y servidores usan PostgreSQL en Supabase, mensajes usa MongoDB Atlas y voz no tiene base. Autenticación y servidores publican eventos en Redis, y mensajes y voz los consumen. Autenticación usa Cloudflare R2, Brevo y Google, y servidores sube sus imágenes a Cloudflare R2. Voz administra las salas de LiveKit Cloud, que le avisa los cambios por webhook. Todos los servicios mandan trazas y logs a Grafana Cloud.">
     <defs>
       <marker id="a-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#24625E"/>
@@ -208,6 +208,9 @@
     <text x="56" y="304" text-anchor="middle" font-size="10.5" font-weight="600" fill="#5A6874">Google</text>
     <text x="56" y="319" text-anchor="middle" font-size="9" fill="#5A6874">externos</text>
     <path d="M120,286 L108,286" fill="none" stroke="#5A6874" stroke-width="1.3" marker-end="url(#a-gray)"/>
+    <!-- servidores también sube a R2 (íconos y banners): pasa por debajo de los servicios -->
+    <path d="M600,366 L600,396 L56,396 L56,332" fill="none" stroke="#5A6874" stroke-width="1.3" marker-end="url(#a-gray)"/>
+    <text x="470" y="392" text-anchor="middle" font-size="8.5" fill="#5A6874">íconos y banners</text>
 
     <!-- LiveKit Cloud -->
     <rect x="826" y="248" width="86" height="86" rx="10" fill="none" stroke="#5A6874" stroke-width="1.5" stroke-dasharray="5 5"/>
@@ -216,9 +219,15 @@
     <text x="869" y="301" text-anchor="middle" font-size="9.5" fill="#5A6874">audio y video</text>
     <text x="869" y="313" text-anchor="middle" font-size="9.5" fill="#5A6874">directo desde</text>
     <text x="869" y="325" text-anchor="middle" font-size="9.5" fill="#5A6874">el cliente</text>
-    <path d="M800,300 L822,300" fill="none" stroke="#5A6874" stroke-width="1.3" marker-end="url(#a-gray)"/>
+    <!-- voz administra las salas y LiveKit le avisa por webhook -->
+    <path d="M804,300 L822,300" fill="none" stroke="#5A6874" stroke-width="1.3" marker-start="url(#a-gray)" marker-end="url(#a-gray)"/>
 
-    <!-- eventos -->
+    <!-- eventos (con un borde del color del fondo donde cruzan la flecha de servidores a R2) -->
+    <g fill="none" stroke="#E9EDF1" stroke-width="7">
+      <path d="M190,391 L190,401"/>
+      <path d="M370,391 L370,401"/>
+      <path d="M550,391 L550,401"/>
+    </g>
     <g fill="none" stroke="#5D3A56" stroke-width="1.5">
       <path d="M190,366 L190,400" marker-end="url(#a-plum)"/>
       <path d="M550,366 L550,400" marker-end="url(#a-plum)"/>
@@ -256,7 +265,7 @@
       <h2>Clientes y gateway</h2>
       <dl>
         <dt>Cliente <em>Expo · TypeScript</em></dt>
-        <dd>Una sola base de código para web y Android. La web se sirve desde Cloudflare Pages y la APK se compila con EAS en cada merge a <code>main</code>.</dd>
+        <dd>Una sola base de código para web y Android. La web de producción se sirve desde Vercel (Cloudflare Pages sirve <code>develop</code> como entorno de prueba) y la APK se compila con EAS en cada merge a <code>main</code>.</dd>
         <dt>Backoffice <em>Expo · TypeScript</em></dt>
         <dd>Para el staff: usuarios, servidores, reportes, métricas, trazas y logs. Se sirve desde Cloudflare Pages.</dd>
         <dt>Gateway <em>KrakenD CE</em></dt>
@@ -303,13 +312,15 @@
         <dd>Trazas en Tempo y logs en Loki, con un <code>trace_id</code> que cruza HTTP, eventos y WebSocket.</dd>
         <dt>Brevo y Google</dt>
         <dd>Mails transaccionales y login federado, los dos desde autenticación.</dd>
+        <dt>Vercel y Cloudflare Pages</dt>
+        <dd>La web del cliente en producción (Vercel), y el backoffice y el entorno de prueba de <code>develop</code> (Cloudflare Pages).</dd>
       </dl>
     </div>
   </section>
 
   <section class="stack">
     <h2>Por qué cada tecnología donde está</h2>
-    <p>El detalle y las alternativas descartadas están en los <a href="../adr/0014-api-gateway-con-krakend.md">ADR 0014</a> y <a href="../adr/0015-lenguajes-y-bases-de-datos.md">0015</a>.</p>
+    <p>El detalle y las alternativas descartadas están en los <a href="../adr/0014-api-gateway-con-krakend.md">ADR 0014</a> y <a href="../adr/0015-lenguajes-y-bases-de-datos.md">0015</a>, y las de cada proveedor de la nube, en el <a href="../adr/0016-despliegue-en-la-nube.md">ADR 0016</a>.</p>
     <div class="stack-grid">
       <div>
         <h3>KrakenD</h3>
@@ -356,6 +367,7 @@
       <li><a href="../adr/0013-observabilidad-en-el-backoffice.md">Trazas y logs en el backoffice</a></li>
       <li><a href="../adr/0014-api-gateway-con-krakend.md">API Gateway con KrakenD CE</a></li>
       <li><a href="../adr/0015-lenguajes-y-bases-de-datos.md">Lenguajes y bases de datos</a></li>
+      <li><a href="../adr/0016-despliegue-en-la-nube.md">Despliegue en la nube</a></li>
     </ol>
   </section>
 
