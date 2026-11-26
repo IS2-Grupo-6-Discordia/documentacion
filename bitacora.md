@@ -16,21 +16,21 @@ Evolución semana por semana del backlog y del trabajo de Discordia, desde el ar
 | 21/09 – 27/09 | Checkpoint 1 (25/09) | 0 | 2 | 74 | 2 |
 | 28/09 – 04/10 | | 4 | 12 | 66 | 5 |
 | 05/10 – 11/10 | | 1 | 7 | 60 | 6 |
-| 12/10 – 18/10 | | 9 | 5 | 64 | 11 |
-| 19/10 – 25/10 | Checkpoint 2 (23/10) | 7 | 25 | 46 | 19 |
-| 26/10 – 01/11 | | 1 | 2 | 45 | 61 |
-| 02/11 – 08/11 | | 3 | 12 | 36 | 58 |
-| 09/11 – 15/11 | Checkpoint 3 (13/11) | 0 | 4 | 32 | 90 |
-| 16/11 – 22/11 | | 25 | 23 | 34 | 56 |
+| 12/10 – 18/10 | | 9 | 5 | 64 | 10 |
+| 19/10 – 25/10 | Checkpoint 2 (23/10) | 7 | 25 | 46 | 18 |
+| 26/10 – 01/11 | | 1 | 2 | 45 | 55 |
+| 02/11 – 08/11 | | 3 | 12 | 36 | 53 |
+| 09/11 – 15/11 | Checkpoint 3 (13/11) | 0 | 4 | 32 | 68 |
+| 16/11 – 22/11 | | 25 | 23 | 34 | 48 |
 | 23/11 – 29/11 | | 4 | 15 | 23 | 17 |
 
-En total entraron **137 issues** y se cerraron **114**. De los **23 abiertos**, 15 son historias optativas que el grupo no eligió (monetización, mensajes directos, adjuntos, búsqueda, reacciones, notificaciones push, entre otras), 1 es una optativa ya hecha que falta cerrar y 7 son tareas técnicas, de testing o de documentación (ver [Estado al cierre](#estado-al-cierre)).
+En total entraron **137 issues**, se cerraron **114** y se mergearon **285 PRs**. De los **23 abiertos**, 15 son historias optativas que el grupo no eligió (monetización, mensajes directos, adjuntos, búsqueda, reacciones, notificaciones push, entre otras), 1 es una optativa ya hecha que falta cerrar y 7 son tareas técnicas, de testing o de documentación (ver [Estado al cierre](#estado-al-cierre)).
 
 Se ven tres etapas:
 
 1. **Septiembre: base y primeras historias.** Poco volumen de PRs: se armaron los repos, la infraestructura y la autenticación, y se integró el frontend con el gateway.
 2. **Octubre: el núcleo.** Roles, canales, voz, moderación y el bus de eventos. El backlog abierto baja de 74 a 45.
-3. **Noviembre: optativas y requisitos no funcionales.** El pico de PRs (de 56 a 90 por semana) llega con la mensajería, las optativas y la observabilidad. Del 16/11 en adelante se cargaron 29 tareas de infraestructura, testing, seguridad y documentación para cerrar los requisitos no funcionales, y se cerraron 38.
+3. **Noviembre: optativas y requisitos no funcionales.** El pico de PRs (entre 48 y 68 por semana) llega con la mensajería, las optativas y la observabilidad. Del 16/11 en adelante se cargaron 29 tareas de infraestructura, testing, seguridad y documentación para cerrar los requisitos no funcionales, y se cerraron 38.
 
 ## Semana por semana
 
@@ -84,7 +84,7 @@ Se ven tres etapas:
 - **Mi cuenta:** cambiar contraseña y email, y código de verificación en el registro.
 - Backoffice: suspender y reactivar servidores, renovación de sesión y deploy en Cloudflare Pages.
 - Voz: cámara y compartir pantalla. Mensajes: esqueleto del microservicio.
-- 61 PRs, el primer salto grande de volumen.
+- 55 PRs, el primer salto grande de volumen.
 
 ### 02/11 – 08/11
 
@@ -96,7 +96,7 @@ Se ven tres etapas:
 
 ### 09/11 – 15/11 · Checkpoint 3
 
-- **El pico de trabajo: 90 PRs.**
+- **El pico de trabajo: 68 PRs.**
 - Optativas de moderación: expulsar (#59), silenciar temporalmente (#60) y filtro de palabras prohibidas (#63), con sus ADRs 0011 y 0012.
 - Mensajes: menciones, editar y eliminar con actualización en vivo, y consumo de eventos para cortar el tiempo real al perder el acceso.
 - Notificaciones: no leídas, marcar como leídas y silenciar por canal o servidor.
