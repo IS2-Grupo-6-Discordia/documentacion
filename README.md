@@ -9,7 +9,8 @@ Este repo no tiene código ni setup, salvo las pruebas de carga en [`pruebas/car
 | Archivo | Qué tiene |
 |---|---|
 | [`enunciado.md`](enunciado.md) | Enunciado del TP: historias obligatorias y optativas, y requisitos no funcionales |
-| [`arquitectura/arquitectura.html`](arquitectura/arquitectura.html) | Mapa del sistema: clientes, gateway, servicios, bases, bus de eventos y servicios externos. Se ve descargándolo y abriéndolo en el navegador |
+| [`arquitectura/c4.md`](arquitectura/c4.md) | Diagramas C4: contexto, contenedores, componentes de mensajes y deployment. Es la referencia de la arquitectura |
+| [`arquitectura/arquitectura.html`](arquitectura/arquitectura.html) | Mapa del sistema en una página: una vista general para presentar, que resume los diagramas C4. Se ve descargándolo y abriéndolo en el navegador |
 | [`eventos.md`](eventos.md) | Catálogo único de eventos entre servicios: sobre, convenciones, quién emite y quién consume cada uno |
 | [`eventos/sobre.schema.json`](eventos/sobre.schema.json) | JSON Schema del sobre de eventos. Los tests de contrato de cada servicio usan una copia |
 | [`tiempo-real.md`](tiempo-real.md) | Contrato común de los WebSocket: ticket, frames, cierre y reconexión |
