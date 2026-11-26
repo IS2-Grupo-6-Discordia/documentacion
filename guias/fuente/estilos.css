@@ -1,0 +1,578 @@
+/*
+ * Estilos de las guías de usuario de Discordia.
+ * Los tokens salen de tailwind.config.ts (cliente web y backoffice) y de ux/sistema-de-diseno.md:
+ * mismo fondo, superficies translúcidas, un solo color de acción (teal) y colores semánticos fijos.
+ * Se imprime a PDF con Chrome (ver README de esta carpeta), en A4 y con fondos.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+  --bg: #0A1620;
+  --surface: rgba(255, 255, 255, 0.055);
+  --surface-2: rgba(255, 255, 255, 0.10);
+  --surface-3: rgba(255, 255, 255, 0.15);
+  --border: rgba(255, 255, 255, 0.13);
+  --border-2: rgba(255, 255, 255, 0.24);
+  --text: #E6F3F3;
+  --title: #F2FAFA;
+  --muted: #8DA8AC;
+  --subtle: #7F9DA1;
+  --primary: #37D6C0;
+  --primary-d: rgba(55, 214, 192, 0.17);
+  --primary-ink: #04211D;
+  --accent: #F0C24B;
+  --accent-d: rgba(240, 194, 75, 0.15);
+  --danger: #FF7F72;
+  --danger-d: rgba(255, 127, 114, 0.15);
+  --success: #4FD69C;
+  --success-d: rgba(79, 214, 156, 0.15);
+  --sel: rgba(55, 214, 192, 0.15);
+  --r-control: 10px;
+  --r-banner: 12px;
+  --r-brand: 14px;
+  --r-card: 18px;
+}
+
+/*
+ * Chrome no pinta el margen de la hoja con el fondo, así que la hoja va sin márgenes y el aire
+ * arriba y abajo lo dan el <thead> y el <tfoot> de .flow, que Chrome repite en cada hoja.
+ */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", "Roboto", "Segoe UI", -apple-system, system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.6;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ---------- Páginas ---------- */
+
+/* La portada ocupa la primera hoja entera y tapa el encabezado corrido. */
+.cover {
+  position: relative;
+  z-index: 2;
+  width: 210mm;
+  height: 297mm;
+  overflow: hidden;
+  background: var(--bg);
+  break-after: page;
+}
+
+table.flow { width: 100%; border-collapse: collapse; }
+table.flow > thead td { height: 19mm; padding: 0; }
+table.flow > tfoot td { height: 16mm; padding: 0; }
+table.flow > tbody > tr > td { padding: 0 18mm; }
+
+/* Encabezado y pie corridos: position fixed se repite en cada hoja impresa. */
+.run-head, .run-foot {
+  position: fixed;
+  left: 18mm;
+  right: 18mm;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 7pt;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+.run-head { top: 8mm; }
+.run-head span { display: inline-flex; align-items: center; gap: 7px; }
+.run-foot { bottom: 7mm; border-top: 1px solid var(--border); padding-top: 2.5mm; letter-spacing: 0.4px; text-transform: none; font-weight: 500; }
+
+/* Los capítulos fluyen uno detrás del otro; el índice empieza en hoja propia. */
+.chapter { margin-top: 12mm; }
+.chapter.toc { margin-top: 0; break-after: page; }
+.keep { break-inside: avoid; }
+.chapter-head { break-inside: avoid; break-after: avoid; }
+.chapter-lead { break-before: avoid; break-after: avoid; }
+h3 { break-after: avoid; }
+
+/* ---------- Marca ---------- */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-brand);
+  background: var(--primary);
+  color: var(--primary-ink);
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1;
+  box-shadow: 0 8px 24px -6px rgba(55, 214, 192, 0.6);
+}
+.brand.sm { width: 18px; height: 18px; border-radius: 5px; font-size: 10px; box-shadow: none; }
+.brand.xl { width: 96px; height: 96px; border-radius: 28px; font-size: 52px; box-shadow: 0 18px 48px -10px rgba(55, 214, 192, 0.55); }
+
+/* ---------- Portada ---------- */
+
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30mm 22mm 22mm;
+}
+.cover::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  pointer-events: none;
+  height: 160mm;
+  background:
+    radial-gradient(150mm 110mm at 90% 0%, rgba(55, 214, 192, 0.18), transparent 70%),
+    radial-gradient(90mm 70mm at 0% 100%, rgba(55, 214, 192, 0.06), transparent 70%);
+}
+.cover .top { position: relative; }
+.cover .wordmark {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15pt;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--title);
+}
+.cover .hero { position: relative; margin-top: 46mm; }
+.cover .kicker {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--primary-d);
+  color: var(--primary);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+.cover h1 {
+  margin: 8mm 0 4mm;
+  font-size: 40pt;
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  color: var(--title);
+}
+.cover h1 em { font-style: normal; color: var(--primary); }
+.cover .lead { max-width: 135mm; font-size: 12.5pt; color: var(--muted); line-height: 1.55; }
+.cover .platforms { display: flex; gap: 8px; margin-top: 10mm; flex-wrap: wrap; }
+.cover .meta {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.cover .meta div {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-banner);
+  padding: 10px 14px;
+}
+.cover .meta b {
+  display: block;
+  font-size: 7pt;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--subtle);
+  font-weight: 600;
+}
+.cover .meta span { font-size: 10pt; color: var(--text); font-weight: 600; }
+
+/* ---------- Índice ---------- */
+
+.toc h2 { margin-top: 0; }
+.toc ol { list-style: none; padding: 0; margin: 8mm 0 0; counter-reset: toc; }
+.toc li {
+  counter-increment: toc;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  font-weight: 800;
+  font-size: 11pt;
+  color: var(--primary);
+}
+.toc li a { color: var(--title); font-weight: 700; text-decoration: none; font-size: 11.5pt; }
+.toc li p { margin: 2px 0 0; color: var(--muted); font-size: 9.5pt; }
+
+/* ---------- Tipografía ---------- */
+
+.chapter-head { display: flex; align-items: center; gap: 14px; margin: 4mm 0 2mm; }
+.chapter-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 8px;
+  border-radius: var(--r-control);
+  background: var(--primary-d);
+  color: var(--primary);
+  font-weight: 900;
+  font-size: 13pt;
+}
+h2 {
+  margin: 0;
+  font-size: 20pt;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--title);
+}
+.chapter-lead { margin: 3mm 0 7mm; color: var(--muted); font-size: 11pt; max-width: 150mm; }
+h3 {
+  margin: 7mm 0 2.5mm;
+  font-size: 12.5pt;
+  font-weight: 700;
+  color: var(--title);
+  break-after: avoid;
+}
+h3 + p { margin-top: 0; }
+p { margin: 0 0 3mm; }
+a { color: var(--primary); }
+strong { color: var(--title); font-weight: 700; }
+.label {
+  font-size: 7.5pt;
+  font-weight: 600;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+/* ---------- Pasos ---------- */
+
+ol.steps { list-style: none; padding: 0; margin: 2mm 0 4mm; counter-reset: step; }
+ol.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 3.2mm 38px;
+  break-inside: avoid;
+}
+ol.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--primary-d);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ol.steps > li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 11.5px;
+  top: 27px;
+  bottom: 2px;
+  width: 1px;
+  background: var(--border);
+}
+
+ul.dots { padding: 0; margin: 1mm 0 4mm; list-style: none; }
+ul.dots > li { position: relative; padding-left: 18px; margin-bottom: 1.6mm; break-inside: avoid; }
+ul.dots > li::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--primary);
+}
+
+/* ---------- Elementos de interfaz citados en el texto ---------- */
+
+.ui {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  border-radius: 7px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--title);
+  font-size: 9pt;
+  font-weight: 700;
+  white-space: nowrap;
+  vertical-align: 1px;
+}
+.ui.primary { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+.ui.danger { background: var(--danger-d); border-color: rgba(255, 127, 114, 0.45); color: var(--danger); }
+.key {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 5px;
+  border: 1px solid var(--border-2);
+  border-bottom-width: 2px;
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--title);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 9999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 8.5pt;
+  font-weight: 600;
+  color: var(--text);
+}
+.chip.on { background: var(--primary-d); border-color: rgba(55, 214, 192, 0.45); color: var(--primary); }
+.tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 6.5pt;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  background: var(--primary-d);
+  color: var(--primary);
+  vertical-align: 1px;
+}
+.tag.warn { background: var(--accent-d); color: var(--accent); }
+.tag.bad { background: var(--danger-d); color: var(--danger); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 9999px; vertical-align: 0; }
+.dot.online { background: var(--success); }
+.dot.away { background: var(--accent); }
+.dot.dnd { background: var(--danger); }
+.dot.off { background: var(--border-2); }
+
+/* ---------- Avisos ---------- */
+
+.note {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  margin: 3mm 0 4.5mm;
+  padding: 11px 14px;
+  border-radius: var(--r-banner);
+  border: 1px solid rgba(55, 214, 192, 0.45);
+  background: var(--primary-d);
+  break-inside: avoid;
+  font-size: 9.8pt;
+}
+.note svg { width: 18px; height: 18px; margin-top: 2px; stroke: var(--primary); }
+.note b { color: var(--title); }
+.note p { margin: 0; }
+.note.warn { border-color: rgba(240, 194, 75, 0.5); background: var(--accent-d); }
+.note.warn svg { stroke: var(--accent); }
+.note.danger { border-color: rgba(255, 127, 114, 0.5); background: var(--danger-d); }
+.note.danger svg { stroke: var(--danger); }
+
+/* ---------- Tarjetas y maquetas ---------- */
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 3mm 0 5mm; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 3mm 0 5mm; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+  break-inside: avoid;
+}
+.card h4 {
+  margin: 0 0 4px;
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--title);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card p { margin: 0; color: var(--muted); font-size: 9.3pt; line-height: 1.5; }
+.card .ico {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--primary-d);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.card .ico svg { width: 15px; height: 15px; stroke: var(--primary); }
+
+/* Ventana simulada: una tarjeta con barra superior, para mostrar una pantalla o un menú. */
+.mock {
+  margin: 3mm 0 5mm;
+  border-radius: var(--r-card);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  overflow: hidden;
+  break-inside: avoid;
+}
+.mock .bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 8pt;
+  color: var(--subtle);
+  font-weight: 600;
+}
+.mock .bar i { width: 8px; height: 8px; border-radius: 9999px; background: var(--surface-3); display: inline-block; }
+.mock .bar span { margin-left: 8px; }
+.mock .body { padding: 14px; }
+.mock-caption { margin: -3mm 0 5mm; font-size: 8.5pt; color: var(--subtle); text-align: center; }
+
+.menu {
+  width: 100%;
+  max-width: 250px;
+  background: #102029;
+  border: 1px solid var(--border);
+  border-radius: var(--r-banner);
+  padding: 5px;
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.6);
+}
+.menu .item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font-size: 9pt;
+  color: var(--text);
+}
+.menu .item.hi { background: var(--sel); color: var(--primary); }
+.menu .item.bad { color: var(--danger); }
+.menu .sep { height: 1px; background: var(--border); margin: 4px 6px; }
+.menu .head { padding: 6px 9px 3px; font-size: 7pt; letter-spacing: 1.1px; text-transform: uppercase; color: var(--subtle); font-weight: 600; }
+.menu .item svg { width: 13px; height: 13px; stroke: currentColor; flex: none; }
+.menu .item small { margin-left: auto; color: var(--subtle); font-size: 7.5pt; }
+
+.row { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; break-inside: avoid; }
+.menu, .grid-2, .grid-3, .controls { break-inside: avoid; }
+.row > .grow { flex: 1; min-width: 60mm; }
+
+/* Barra de controles de voz. */
+.controls { display: flex; gap: 10px; justify-content: center; padding: 6px 0 2px; }
+.ctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 7.5pt;
+  color: var(--muted);
+  font-weight: 600;
+}
+.ctl .b {
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ctl .b svg { width: 18px; height: 18px; stroke: var(--title); }
+.ctl .b.on { background: var(--primary-d); border-color: rgba(55, 214, 192, 0.45); }
+.ctl .b.on svg { stroke: var(--primary); }
+.ctl .b.end { background: var(--danger); border-color: var(--danger); }
+.ctl .b.end svg { stroke: #2A0703; }
+
+/* Mensaje del chat simulado. */
+.msg { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 6px 4px; }
+.msg .av {
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  background: var(--primary-d);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.msg .who { font-size: 9pt; font-weight: 700; color: var(--title); }
+.msg .who time { font-weight: 400; color: var(--subtle); font-size: 7.5pt; margin-left: 6px; }
+.msg .txt { font-size: 9.3pt; color: var(--text); }
+.mention { background: var(--primary-d); color: var(--primary); border-radius: 4px; padding: 0 3px; font-weight: 600; }
+.composer {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--r-control);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 9pt;
+  color: var(--subtle);
+}
+.error-line {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--r-banner);
+  background: var(--danger-d);
+  border: 1px solid rgba(255, 127, 114, 0.5);
+  color: var(--danger);
+  font-size: 8.8pt;
+}
+
+/* Tablas. */
+table.t { width: 100%; border-collapse: separate; border-spacing: 0; margin: 2mm 0 5mm; font-size: 9.3pt; break-inside: avoid; }
+table.t th {
+  text-align: left;
+  font-size: 7.5pt;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--subtle);
+  font-weight: 600;
+  padding: 0 10px 6px;
+  border-bottom: 1px solid var(--border-2);
+}
+table.t td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+table.t td:first-child { color: var(--title); font-weight: 600; white-space: nowrap; }
+table.t tr:last-child td { border-bottom: none; }
+
+/* Cierre. */
+.closing {
+  margin-top: 8mm;
+  padding: 18px 20px;
+  border-radius: var(--r-card);
+  background: linear-gradient(135deg, rgba(55, 214, 192, 0.16), rgba(55, 214, 192, 0.04));
+  border: 1px solid rgba(55, 214, 192, 0.35);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  break-inside: avoid;
+}
+.closing p { margin: 0; color: var(--muted); }
+.closing strong { display: block; font-size: 12pt; margin-bottom: 2px; }
+
+/* En pantalla (abriendo el HTML), se lee como una página larga con los mismos márgenes. */
+@media screen {
+  body { max-width: 210mm; margin: 0 auto; }
+  .run-head, .run-foot { display: none; }
+}

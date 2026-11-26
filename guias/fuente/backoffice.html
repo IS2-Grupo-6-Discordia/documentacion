@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía del backoffice de Discordia</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- Íconos reutilizados (trazo, estilo Ionicons como en la app). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="12" height="10" rx="2"/><path d="m15 11 6-3v8l-6-3"/></symbol>
+    <symbol id="i-screen" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-hang" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c5-5 13-5 18 0l-2.5 2.5-3-1.5v-2.5a9 9 0 0 0-5 0V15l-3 1.5z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9v2a3 3 0 0 0 5 2.2M15 9.3V6a3 3 0 0 0-5.8-1M5 11a7 7 0 0 0 11.5 5.3M19 11a7 7 0 0 1-.6 2.9M12 18v3M3 3l18 18"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+  </defs>
+</svg>
+
+
+<!-- ============ PORTADA ============ -->
+<section class="cover" style="display:flex;flex-direction:column;justify-content:space-between;padding:30mm 22mm 22mm">
+  <div class="top">
+    <div class="wordmark"><span class="brand">D</span> Discordia <span class="tag" style="margin-left:4px">Backoffice</span></div>
+  </div>
+  <div class="hero">
+    <span class="kicker">Guía del backoffice</span>
+    <h1>Administrá la plataforma <em>Discordia</em></h1>
+    <p class="lead">Usuarios, servidores, reportes, expedientes, métricas y observabilidad: todo lo que el staff necesita para cuidar la plataforma, paso a paso.</p>
+    <div class="platforms">
+      <span class="chip on"><svg width="13" height="13" style="stroke:currentColor"><use href="#i-shield"/></svg> Solo staff</span>
+      <span class="chip on"><svg width="13" height="13" style="stroke:currentColor"><use href="#i-globe"/></svg> Navegador y celular</span>
+    </div>
+  </div>
+  <div class="meta">
+    <div><b>Versión</b><span>Diciembre 2026</span></div>
+    <div><b>Para</b><span>Staff de la plataforma</span></div>
+    <div><b>Equipo</b><span>IS2 · Grupo 6</span></div>
+  </div>
+</section>
+
+<div class="run-head"><span><span class="brand sm">D</span> Discordia</span><span>Guía del backoffice</span></div>
+<div class="run-foot"><span>Guía del backoffice de Discordia</span><span>IS2 · Grupo 6</span></div>
+
+<table class="flow">
+<thead><tr><td></td></tr></thead>
+<tfoot><tr><td></td></tr></tfoot>
+<tbody><tr><td>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="chapter toc">
+  <div class="chapter-head"><span class="brand sm">D</span><span class="label">Contenido</span></div>
+  <h2>Qué vas a encontrar</h2>
+  <ol>
+    <li><div><a href="#acceso">Acceso al backoffice</a><p>Quién puede entrar, cómo ingresar y la verificación en dos pasos.</p></div></li>
+    <li><div><a href="#navegacion">Cómo está organizado</a><p>Las cinco secciones y cómo se conectan entre sí.</p></div></li>
+    <li><div><a href="#usuarios">Usuarios</a><p>Buscar, filtrar, suspender y reactivar cuentas.</p></div></li>
+    <li><div><a href="#servidores">Servidores</a><p>Buscar, suspender, levantar la suspensión y eliminar.</p></div></li>
+    <li><div><a href="#reportes">Reportes</a><p>Revisar lo que reportan los usuarios y decidir qué hacer.</p></div></li>
+    <li><div><a href="#expedientes">Expedientes</a><p>Toda la información de un usuario o un servidor en una sola vista.</p></div></li>
+    <li><div><a href="#metricas">Métricas</a><p>Usuarios activos, servidores creados y mensajes por período.</p></div></li>
+    <li><div><a href="#observabilidad">Observabilidad</a><p>Trazas, logs y búsqueda por código de error.</p></div></li>
+    <li><div><a href="#buenas">Buenas prácticas</a><p>Cómo actuar ante cada caso y qué tener en cuenta.</p></div></li>
+  </ol>
+</section>
+
+<!-- ============ 1. ACCESO ============ -->
+<section class="chapter" id="acceso">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Acceso al backoffice</h2></div>
+  <p class="chapter-lead">El backoffice es una aplicación aparte, de acceso exclusivo para el staff de la plataforma. Funciona en el navegador y se adapta a la pantalla del celular.</p>
+
+  <h3>Quién puede entrar</h3>
+  <p>Solo las cuentas con rol <span class="tag">Staff</span>. Es un rol de toda la plataforma, distinto de los roles que cada servidor define para sus miembros. No se puede pedir desde la app: lo otorga quien administra el sistema.</p>
+  <div class="note">
+    <svg><use href="#i-key"/></svg>
+    <p><b>Para el equipo técnico:</b> el rol se otorga con <code>python -m scripts.set_role &lt;email&gt; staff</code> en el servicio de autenticación (y se quita con <code>user</code>). La cuenta tiene que existir antes: se registra como cualquier usuario desde la app.</p>
+  </div>
+  </div>
+
+  <h3>Ingresar</h3>
+  <ol class="steps">
+    <li>Abrí el link del backoffice e ingresá con el <strong>email y la contraseña</strong> de tu cuenta de Discordia.</li>
+    <li>Si tu cuenta tiene <strong>verificación en dos pasos</strong>, escribí el código de 6 dígitos de tu app autenticadora o tocá <span class="ui">Usar un código de recuperación</span>.</li>
+    <li>Entrás a la sección <strong>Usuarios</strong>. La sesión se renueva sola mientras trabajes.</li>
+  </ol>
+  <div class="grid-2">
+    <div class="note warn" style="margin:0">
+      <svg><use href="#i-warn"/></svg>
+      <p><b>"Esperando al servidor..."</b> Si el sistema estaba en reposo, el primer ingreso puede tardar hasta un minuto. Podés ir completando tus datos.</p>
+    </div>
+    <div class="note danger" style="margin:0">
+      <svg><use href="#i-lock"/></svg>
+      <p><b>Una cuenta sin rol staff no entra,</b> aunque la contraseña sea correcta. Tampoco después de varios intentos fallidos: la cuenta se bloquea unos minutos.</p>
+    </div>
+  </div>
+  <p style="margin-top:4mm">Si olvidaste la contraseña, usá <span class="ui">¿Olvidaste tu contraseña?</span>: te llega un link por email que vence en una hora.</p>
+</section>
+
+<!-- ============ 2. NAVEGACIÓN ============ -->
+<section class="chapter" id="navegacion">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">02</span><h2>Cómo está organizado</h2></div>
+  <p class="chapter-lead">El menú tiene cinco secciones. En la computadora está a la izquierda; en el celular, como pestañas. Abajo está <span class="ui danger">Cerrar sesión</span>.</p>
+
+  <div class="grid-3">
+    <div class="card"><h4><span class="ico"><svg><use href="#i-users"/></svg></span>Usuarios</h4><p>Todas las cuentas, con búsqueda y filtros. Suspender y reactivar.</p></div>
+    <div class="card"><h4><span class="ico"><svg><use href="#i-server"/></svg></span>Servidores</h4><p>Todos los servidores. Suspender, reactivar y eliminar.</p></div>
+    <div class="card"><h4><span class="ico"><svg><use href="#i-flag"/></svg></span>Reportes</h4><p>Lo que reportan los usuarios, para revisar o descartar.</p></div>
+    <div class="card"><h4><span class="ico"><svg><use href="#i-chart"/></svg></span>Métricas</h4><p>La actividad de toda la plataforma en un período.</p></div>
+    <div class="card"><h4><span class="ico"><svg><use href="#i-pulse"/></svg></span>Observabilidad</h4><p>Trazas y logs de los servicios, y búsqueda por código de error.</p></div>
+    <div class="card"><h4><span class="ico"><svg><use href="#i-file"/></svg></span>Expedientes</h4><p>Se abren desde Usuarios, Servidores o un reporte.</p></div>
+  </div>
+  <p>Tocar un usuario o un servidor en cualquier lista abre su <a href="#expedientes">expediente</a>. Los reportes tienen un acceso directo <span class="ui">Ver expediente</span> a lo reportado.</p>
+  </div>
+</section>
+
+<!-- ============ 3. USUARIOS ============ -->
+<section class="chapter" id="usuarios">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">03</span><h2>Usuarios</h2></div>
+  <p class="chapter-lead">La lista de todas las cuentas de la plataforma, de a una página por vez (<span class="ui">Cargar más</span> trae las siguientes).</p>
+
+  <div class="mock">
+    <div class="bar"><i></i><i></i><i></i><span>Usuarios</span></div>
+    <div class="body">
+      <div class="composer" style="margin:0 0 10px"><svg width="12" height="12" style="stroke:var(--subtle);vertical-align:-1px"><use href="#i-search"/></svg>&nbsp; Buscar por nombre o email...</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px"><span class="chip on">Todos</span><span class="chip">Suspendidos</span></div>
+      <div class="msg"><div class="av">LM</div><div><div class="who">Lucía Martínez <span class="tag">Staff</span></div><div class="txt" style="color:var(--muted)">lucia@ejemplo.com</div></div></div>
+      <div class="msg"><div class="av">TB</div><div><div class="who">Tomás Benítez <span class="tag bad">Suspendido</span></div><div class="txt" style="color:var(--muted)">tomas@ejemplo.com</div></div></div>
+    </div>
+  </div>
+  </div>
+
+  <h3>Buscar</h3>
+  <p>Escribí parte del nombre o del email. Los filtros de arriba muestran todas las cuentas o solo las suspendidas. Tu propia cuenta aparece marcada con <em>(vos)</em>.</p>
+
+  <h3>Suspender una cuenta</h3>
+  <ol class="steps">
+    <li>Tocá <span class="ui danger">Suspender</span> en la fila del usuario, o desde su expediente.</li>
+    <li>Leé el resumen y confirmá con <span class="ui danger">Suspender cuenta</span>.</li>
+  </ol>
+  <div class="note danger">
+    <svg><use href="#i-pause"/></svg>
+    <p><b>Qué pasa al suspender:</b> no puede iniciar sesión, se cierran sus sesiones abiertas al instante, sale de las llamadas en curso y su perfil deja de estar disponible para el resto. No se borra nada.</p>
+  </div>
+
+  <h3>Reactivar una cuenta</h3>
+  <p>En una cuenta suspendida, tocá <span class="ui primary">Reactivar</span> y confirmá con <span class="ui">Reactivar cuenta</span>. Vuelve a poder iniciar sesión y su perfil vuelve a estar visible.</p>
+</section>
+
+<!-- ============ 4. SERVIDORES ============ -->
+<section class="chapter" id="servidores">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">04</span><h2>Servidores</h2></div>
+  <p class="chapter-lead">Todos los servidores de la plataforma, con búsqueda por nombre. Las acciones sobre un servidor afectan a todos sus miembros.</p>
+
+  <table class="t">
+    <tr><th>Acción</th><th>Qué pasa</th><th>Se puede deshacer</th></tr>
+    <tr><td><span class="ui">Suspender</span></td><td>Ningún miembro puede entrar al servidor ni a sus llamadas mientras dure la suspensión. Quienes lo tenían abierto ven "Servidor suspendido".</td><td>Sí, con <em>Levantar suspensión</em></td></tr>
+    <tr><td><span class="ui primary">Levantar suspensión</span></td><td>Los miembros recuperan el acceso normal, con todo el contenido como estaba.</td><td>—</td></tr>
+    <tr><td><span class="ui danger">Eliminar</span></td><td>Se borra el servidor con sus canales y mensajes. Los miembros pierden el acceso al instante.</td><td><strong style="color:var(--danger)">No</strong></td></tr>
+  </table>
+  </div>
+
+  <h3>Eliminar un servidor</h3>
+  <ol class="steps">
+    <li>Tocá <span class="ui danger">Eliminar</span> en la fila del servidor o en su expediente.</li>
+    <li>Escribí el <strong>nombre exacto del servidor</strong> para confirmar.</li>
+    <li>Tocá <span class="ui danger">Eliminar para siempre</span>.</li>
+  </ol>
+  <div class="note danger">
+    <svg><use href="#i-trash"/></svg>
+    <p><b>Antes de eliminar, considerá suspender.</b> La suspensión frena el problema de inmediato y deja todo intacto por si hace falta revisar el contenido o revertir la decisión.</p>
+  </div>
+</section>
+
+<!-- ============ 5. REPORTES ============ -->
+<section class="chapter" id="reportes">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">05</span><h2>Reportes</h2></div>
+  <p class="chapter-lead">Cuando un usuario reporta un mensaje, a otro usuario o un servidor, el reporte llega acá. Están separados en tres pestañas.</p>
+
+  <div style="display:flex;gap:6px;margin:0 0 4mm"><span class="chip on">Pendientes</span><span class="chip">Revisados</span><span class="chip">Descartados</span></div>
+  </div>
+
+  <div class="mock">
+    <div class="bar"><i></i><i></i><i></i><span>Reportes · Pendientes</span></div>
+    <div class="body">
+      <div class="msg" style="grid-template-columns:30px 1fr"><div class="av" style="background:var(--danger-d);color:var(--danger)"><svg width="14" height="14" style="stroke:currentColor"><use href="#i-flag"/></svg></div><div><div class="who">Mensaje reportado <span class="tag warn">Spam</span><time>hace 2 h</time></div><div class="txt" style="color:var(--muted)">"Comprá seguidores en este link…" · en #general de FIUBA · IS2</div>
+        <div style="display:flex;gap:6px;margin-top:8px"><span class="ui primary">Revisado</span><span class="ui">Descartar</span><span class="ui">Ver expediente</span></div></div></div>
+    </div>
+  </div>
+
+  <h3>Cómo resolver un reporte</h3>
+  <ol class="steps">
+    <li>Leé el motivo y el contenido reportado.</li>
+    <li>Si necesitás contexto, tocá <span class="ui">Ver expediente</span> para ver el historial del usuario o del servidor.</li>
+    <li>Si corresponde, actuá desde el expediente (por ejemplo, suspender la cuenta) y marcá el reporte como <span class="ui primary">Revisado</span>.</li>
+    <li>Si el reporte no tiene fundamento, tocá <span class="ui">Descartar</span>.</li>
+  </ol>
+  <p>Los reportes resueltos pasan a su pestaña y quedan guardados: aparecen también en el expediente de lo reportado.</p>
+</section>
+
+<!-- ============ 6. EXPEDIENTES ============ -->
+<section class="chapter" id="expedientes">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">06</span><h2>Expedientes</h2></div>
+  <p class="chapter-lead">Un expediente reúne en una sola vista lo que se sabe de un usuario o de un servidor, para investigar y decidir sin saltar entre pantallas.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-users"/></svg></span>Expediente de usuario</h4>
+      <ul class="dots" style="margin:6px 0 0;font-size:9.3pt;color:var(--muted)">
+        <li>Estado de la cuenta, fecha de registro y cómo ingresa (email y contraseña o Google).</li>
+        <li>Última actividad en la app y actividad reciente.</li>
+        <li>Servidores a los que pertenece.</li>
+        <li>Reportes recibidos.</li>
+        <li>Acciones de moderación aplicadas sobre la cuenta.</li>
+        <li>Botones para suspender o reactivar.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-server"/></svg></span>Expediente de servidor</h4>
+      <ul class="dots" style="margin:6px 0 0;font-size:9.3pt;color:var(--muted)">
+        <li>Dueño, fecha de creación y cantidad de miembros.</li>
+        <li>Actividad de mensajería: mensajes en total, último mensaje y miembros que escribieron en 7 días.</li>
+        <li>Últimos ingresos de miembros.</li>
+        <li>Reportes del servidor.</li>
+        <li>Acciones de moderación.</li>
+        <li>Botones para suspender, levantar la suspensión o eliminar.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">
+    <svg><use href="#i-info"/></svg>
+    <p><b>Desde un reporte</b> llegás directo al expediente de lo reportado con <span class="ui">Ver expediente</span>, y desde el expediente podés suspender o eliminar sin volver a la lista.</p>
+  </div>
+  </div>
+</section>
+
+<!-- ============ 7. MÉTRICAS ============ -->
+<section class="chapter" id="metricas">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">07</span><h2>Métricas</h2></div>
+  <p class="chapter-lead">La evolución de la plataforma en el período que elijas, sumando todos los servidores.</p>
+
+  <div class="grid-3">
+    <div class="card"><span class="label">Usuarios activos</span><div style="font-size:20pt;font-weight:800;color:var(--title);margin-top:2px">1.248</div><p>Cuentas que usaron Discordia en el período. En el gráfico, cada una cuenta una vez por barra.</p></div>
+    <div class="card"><span class="label">Servidores creados</span><div style="font-size:20pt;font-weight:800;color:var(--title);margin-top:2px">86</div><p>Servidores nuevos en toda la plataforma.</p></div>
+    <div class="card"><span class="label">Mensajes enviados</span><div style="font-size:20pt;font-weight:800;color:var(--title);margin-top:2px">42.910</div><p>Mensajes en los canales de todos los servidores.</p></div>
+  </div>
+  <p class="mock-caption" style="margin-top:-2mm">Valores de ejemplo.</p>
+  </div>
+
+  <ol class="steps">
+    <li>Elegí un período rápido (<span class="chip">7 días</span> o <span class="chip">30 días</span>) o tocá <span class="ui">Elegir fechas</span> y escribí <em>Desde</em> y <em>Hasta</em> (DD/MM/AAAA).</li>
+    <li>Tocá <span class="ui primary">Ver métricas</span>. Cada indicador muestra el total y un gráfico por día.</li>
+    <li>Con <span class="ui">Actualizar</span> traés los datos más recientes.</li>
+  </ol>
+  <p>Si un período no tuvo actividad, la pantalla lo dice en lugar de mostrar un gráfico vacío. El staff no se cuenta entre los usuarios activos.</p>
+</section>
+
+<!-- ============ 8. OBSERVABILIDAD ============ -->
+<section class="chapter" id="observabilidad">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">08</span><h2>Observabilidad</h2></div>
+  <p class="chapter-lead">Para investigar fallas sin entrar a otra herramienta: qué pasó, en qué servicio y en qué orden. Tiene tres pestañas.</p>
+
+  <table class="t">
+    <tr><th>Pestaña</th><th>Qué muestra</th><th>Filtros</th></tr>
+    <tr><td>Trazas</td><td>Cada operación de punta a punta (por ejemplo, enviar un mensaje), con su duración y si terminó con error.</td><td>Servicio, rango, duración, <em>Solo con errores</em></td></tr>
+    <tr><td>Logs</td><td>Los registros de los servicios, con su nivel (Error, Warn, Info, Debug).</td><td>Servicio, nivel, rango</td></tr>
+    <tr><td>Buscar por código</td><td>La traza y los logs del error que vio un usuario.</td><td>Código de 8 caracteres</td></tr>
+  </table>
+  </div>
+
+  <h3>Investigar el error que reportó un usuario</h3>
+  <ol class="steps">
+    <li>Pedile al usuario el <strong>código de 8 caracteres</strong> que le mostró el aviso de error (por ejemplo <code>a1b2c3d4</code>).</li>
+    <li>En <span class="chip on">Buscar por código</span>, pegalo y tocá <span class="ui primary">Buscar</span>.</li>
+    <li>Tocá <span class="ui">Abrir la traza</span>. Vas a ver la <strong>cascada</strong>: cada paso de la operación por servicio, cuánto tardó y dónde falló, y debajo los <strong>logs de la traza</strong>.</li>
+  </ol>
+  <div class="note warn">
+    <svg><use href="#i-info"/></svg>
+    <p><b>Los datos tardan unos segundos en aparecer</b> y se guardan por un tiempo limitado. Si no encontrás algo reciente, esperá un momento y tocá actualizar; si es viejo, puede que ya no esté.</p>
+  </div>
+</section>
+
+<!-- ============ 9. BUENAS PRÁCTICAS ============ -->
+<section class="chapter" id="buenas">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">09</span><h2>Buenas prácticas</h2></div>
+  <p class="chapter-lead">Las acciones del backoffice afectan a personas reales y a comunidades enteras. Algunas pautas para usarlas bien.</p>
+
+  <table class="t">
+    <tr><th>Situación</th><th>Qué conviene hacer</th></tr>
+    <tr><td>Un mensaje ofensivo aislado</td><td>Que lo resuelvan los moderadores del servidor. Marcá el reporte como revisado.</td></tr>
+    <tr><td>Un usuario que reincide</td><td>Revisá su expediente y, si hay varios reportes fundados, suspendé la cuenta.</td></tr>
+    <tr><td>Un servidor dedicado al abuso</td><td>Suspendelo primero para frenar el daño; eliminalo después de revisar.</td></tr>
+    <tr><td>Un reporte sin fundamento</td><td>Descartalo. Queda registrado igual.</td></tr>
+    <tr><td>Un error que reporta un usuario</td><td>Buscá su código en Observabilidad y pasale la traza al equipo técnico.</td></tr>
+  </table>
+  </div>
+
+  <ul class="dots">
+    <li><strong>Mirá el expediente antes de actuar.</strong> El contexto evita sanciones injustas.</li>
+    <li><strong>Preferí lo reversible.</strong> Suspender se deshace; eliminar no.</li>
+    <li><strong>No compartas datos de los usuarios</strong> fuera del backoffice, ni emails ni actividad.</li>
+    <li><strong>Cerrá sesión</strong> al terminar si usás una computadora compartida.</li>
+  </ul>
+
+  <div class="closing">
+    <span class="brand">D</span>
+    <div><strong>Gracias por cuidar Discordia</strong><p>Si encontrás algo que el backoffice no te deja resolver, avisale al equipo técnico con el código de error o el expediente correspondiente.</p></div>
+  </div>
+</section>
+
+</td></tr></tbody>
+</table>
+
+</body>
+</html>
