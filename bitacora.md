@@ -22,15 +22,15 @@ Evolución semana por semana del backlog y del trabajo de Discordia, desde el ar
 | 02/11 – 08/11 | | 3 | 12 | 36 | 53 |
 | 09/11 – 15/11 | Checkpoint 3 (13/11) | 0 | 4 | 32 | 68 |
 | 16/11 – 22/11 | | 25 | 23 | 34 | 48 |
-| 23/11 – 29/11 | | 4 | 15 | 23 | 17 |
+| 23/11 – 29/11 | | 5 | 18 | 21 | 21 |
 
-En total entraron **137 issues**, se cerraron **114** y se mergearon **285 PRs**. De los **23 abiertos**, 15 son historias optativas que el grupo no eligió (monetización, mensajes directos, adjuntos, búsqueda, reacciones, notificaciones push, entre otras), 1 es una optativa ya hecha que falta cerrar y 7 son tareas técnicas, de testing o de documentación (ver [Estado al cierre](#estado-al-cierre)).
+En total entraron **138 issues**, se cerraron **117** y se mergearon **289 PRs**. De los **21 abiertos**, 15 son historias optativas que el grupo no eligió (monetización, mensajes directos, adjuntos, búsqueda, reacciones, notificaciones push, entre otras), 1 es una optativa ya hecha que falta cerrar y 5 son tareas técnicas (ver [Estado al cierre](#estado-al-cierre)).
 
 Se ven tres etapas:
 
 1. **Septiembre: base y primeras historias.** Poco volumen de PRs: se armaron los repos, la infraestructura y la autenticación, y se integró el frontend con el gateway.
 2. **Octubre: el núcleo.** Roles, canales, voz, moderación y el bus de eventos. El backlog abierto baja de 74 a 45.
-3. **Noviembre: optativas y requisitos no funcionales.** El pico de PRs (entre 48 y 68 por semana) llega con la mensajería, las optativas y la observabilidad. Del 16/11 en adelante se cargaron 29 tareas de infraestructura, testing, seguridad y documentación para cerrar los requisitos no funcionales, y se cerraron 38.
+3. **Noviembre: optativas y requisitos no funcionales.** El pico de PRs (entre 48 y 68 por semana) llega con la mensajería, las optativas y la observabilidad. Del 16/11 en adelante se cargaron 30 tareas de infraestructura, testing, seguridad y documentación para cerrar los requisitos no funcionales, y se cerraron 41.
 
 ## Semana por semana
 
@@ -118,15 +118,16 @@ Se ven tres etapas:
 - ADR 0016 de despliegue en la nube y diagramas C4 (documentacion#162, #163).
 - CI: análisis estático de seguridad (reglas de bandit en ruff) en los servicios Python, y CI en cada push a `develop` en los 5 repos de backend.
 - Arreglos de producción en el gateway (IP real detrás de Cloudflare, JWKS al arrancar) y reintentos ante fallas transitorias de autenticación en los clientes.
-- Guías de usuario de la app y del backoffice (#165), mutation testing en mensajes (#166) y esta bitácora (#168).
+- **Guías de usuario** en PDF de la app y del backoffice, con el sistema de diseño de las apps (documentacion#167).
+- **Mutation testing** en mensajes (documentacion#171): 128 de 155 mutantes muertos (82,6 %). Los dos sobrevivientes que cambiaban el comportamiento se cubrieron con tests nuevos (mensajes#40) y el score subió a 83,9 %; el resto solo toca logs, textos de error o rendimiento.
+- Esta bitácora (documentacion#169).
 
 ## Estado al cierre
 
-Abiertos al 26/11, sin contar la tarea de esta bitácora (#168):
+Abiertos al 26/11:
 
 | Tipo | Issues |
 |---|---|
 | Tareas técnicas en curso | #136 Pruebas de integración entre servicios core · #140 Envío de mensajes idempotente · #144 Mantenimiento · #146 Rendimiento |
-| Documentación y testing | #165 Guías de usuario · #166 Mutation testing |
 | Para revisar | #138 CI del cliente web y el backoffice (ya resuelto por #158) · #67 Centro de notificaciones (frontend#98 ya mergeado) |
 | Optativas no elegidas | #34 Registro con PIN · #42 DMs · #43 Bloquear usuarios · #47 Adjuntos · #48 Reacciones · #49 Buscar mensajes · #66 Notificaciones push · #74 Exportar métricas a CSV · #75 Estado de la plataforma · #76 a #81 Monetización |
