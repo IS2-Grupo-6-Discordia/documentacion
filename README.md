@@ -46,6 +46,7 @@ Cada ADR tiene contexto, decisión, alternativas descartadas y consecuencias.
 | [0013](adr/0013-observabilidad-en-el-backoffice.md) | Trazas y logs en el backoffice, a través de autenticación |
 | [0014](adr/0014-api-gateway-con-krakend.md) | API Gateway con KrakenD CE |
 | [0015](adr/0015-lenguajes-y-bases-de-datos.md) | Lenguajes y bases de datos de cada servicio |
+| [0016](adr/0016-despliegue-en-la-nube.md) | Despliegue en la nube: Render, Supabase, Atlas, Upstash, LiveKit Cloud, Vercel y Cloudflare |
 
 Un ADR nuevo lleva el número siguiente y el mismo formato. Si una decisión cambia, se agrega una sección "Actualización" con la fecha al ADR original, sin borrar lo anterior (ver el ADR 0008).
 
@@ -53,7 +54,7 @@ Un ADR nuevo lleva el número siguiente y el mismo formato. Si una decisión cam
 
 | Repo | Qué es |
 |---|---|
-| [`root`](https://github.com/IS2-Grupo-6-Discordia/root) | Submódulos de todos los repos, entorno local completo (`make up`) y Blueprint de Render |
+| [`root`](https://github.com/IS2-Grupo-6-Discordia/root) | Submódulos de todos los repos y entorno local completo (`make up`) |
 | [`gateway`](https://github.com/IS2-Grupo-6-Discordia/gateway) | API Gateway (KrakenD) |
 | [`microservicio-autenticacion`](https://github.com/IS2-Grupo-6-Discordia/microservicio-autenticacion) | Cuentas, sesiones, 2FA y perfiles (Python, PostgreSQL) |
 | [`microservicio-servidores`](https://github.com/IS2-Grupo-6-Discordia/microservicio-servidores) | Servidores, canales, roles, miembros y moderación (Python, PostgreSQL) |
