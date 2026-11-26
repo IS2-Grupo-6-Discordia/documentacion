@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de usuario de Discordia</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<!-- Íconos reutilizados (trazo, estilo Ionicons como en la app). -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="12" height="10" rx="2"/><path d="m15 11 6-3v8l-6-3"/></symbol>
+    <symbol id="i-screen" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-hang" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c5-5 13-5 18 0l-2.5 2.5-3-1.5v-2.5a9 9 0 0 0-5 0V15l-3 1.5z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-2 4 2 4H5"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M16 7l3 3"/></symbol>
+    <symbol id="i-mute" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9v2a3 3 0 0 0 5 2.2M15 9.3V6a3 3 0 0 0-5.8-1M5 11a7 7 0 0 0 11.5 5.3M19 11a7 7 0 0 1-.6 2.9M12 18v3M3 3l18 18"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ PORTADA ============ -->
+<section class="cover" style="display:flex;flex-direction:column;justify-content:space-between;padding:30mm 22mm 22mm">
+  <div class="top">
+    <div class="wordmark"><span class="brand">D</span> Discordia</div>
+  </div>
+  <div class="hero">
+    <span class="kicker">Guía de usuario</span>
+    <h1>Todo lo que necesitás para usar <em>Discordia</em></h1>
+    <p class="lead">Crear tu cuenta, armar servidores, chatear en tiempo real, hablar por voz y cuidar a tu comunidad. Paso a paso, para la app web y para Android.</p>
+    <div class="platforms">
+      <span class="chip on"><svg width="13" height="13" style="stroke:currentColor"><use href="#i-globe"/></svg> Navegador</span>
+      <span class="chip on"><svg width="13" height="13" style="stroke:currentColor"><use href="#i-phone"/></svg> Android (APK)</span>
+    </div>
+  </div>
+  <div class="meta">
+    <div><b>Versión</b><span>Diciembre 2026</span></div>
+    <div><b>Para</b><span>Usuarios de la app</span></div>
+    <div><b>Equipo</b><span>IS2 · Grupo 6</span></div>
+  </div>
+</section>
+
+<div class="run-head"><span><span class="brand sm">D</span> Discordia</span><span>Guía de usuario</span></div>
+<div class="run-foot"><span>Guía de usuario de Discordia</span><span>IS2 · Grupo 6</span></div>
+
+<table class="flow">
+<thead><tr><td></td></tr></thead>
+<tfoot><tr><td></td></tr></tfoot>
+<tbody><tr><td>
+
+<!-- ============ ÍNDICE ============ -->
+<section class="chapter toc">
+  <div class="chapter-head"><span class="brand sm">D</span><span class="label">Contenido</span></div>
+  <h2>Qué vas a encontrar</h2>
+  <ol>
+    <li><div><a href="#empezar">Primeros pasos</a><p>Dónde usar Discordia, crear la cuenta, ingresar y recuperar la contraseña.</p></div></li>
+    <li><div><a href="#cuenta">Tu perfil y tu cuenta</a><p>Foto, bio, estado, verificación en dos pasos y cuenta de Google.</p></div></li>
+    <li><div><a href="#servidores">Servidores</a><p>Crear uno, invitar gente, sumarte con un link y administrarlo.</p></div></li>
+    <li><div><a href="#canales">Canales y categorías</a><p>Organizar el servidor en canales de texto y de voz.</p></div></li>
+    <li><div><a href="#mensajes">Mensajes</a><p>Escribir, mencionar, editar, borrar y reportar.</p></div></li>
+    <li><div><a href="#notificaciones">Notificaciones</a><p>Menciones sin leer y cuánto querés que te avise cada canal.</p></div></li>
+    <li><div><a href="#voz">Voz, video y llamadas</a><p>Canales de voz, cámara, compartir pantalla y llamadas privadas.</p></div></li>
+    <li><div><a href="#roles">Roles y permisos</a><p>Quién puede hacer qué dentro de tu servidor.</p></div></li>
+    <li><div><a href="#moderacion">Moderación</a><p>Reportes, silencios, expulsiones, baneos y palabras prohibidas.</p></div></li>
+    <li><div><a href="#problemas">Si algo no funciona</a><p>Qué significa cada aviso y qué hacer.</p></div></li>
+  </ol>
+</section>
+
+<!-- ============ 1. PRIMEROS PASOS ============ -->
+<section class="chapter" id="empezar">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">01</span><h2>Primeros pasos</h2></div>
+  <p class="chapter-lead">Discordia funciona en el navegador y en Android, con la misma cuenta y los mismos servidores. Lo que hagas en uno se ve al instante en el otro.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-globe"/></svg></span>En el navegador</h4>
+      <p>Abrí el link de la app en Chrome, Edge, Firefox o Safari. No hace falta instalar nada. Para la voz y la cámara, el navegador te va a pedir permiso la primera vez.</p>
+    </div>
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-phone"/></svg></span>En Android</h4>
+      <p>Descargá la APK de la última versión publicada en los <em>Releases</em> del repositorio de la app e instalala. Si Android lo pide, permití instalar apps de este origen.</p>
+    </div>
+  </div>
+  </div>
+
+  <h3>Crear tu cuenta</h3>
+  <ol class="steps">
+    <li>En la pantalla de inicio tocá <span class="ui">Crear cuenta</span>.</li>
+    <li>Completá tu nombre, tu correo electrónico y una contraseña. La contraseña tiene que tener <strong>al menos 8 caracteres, una mayúscula, una minúscula y un número</strong>; la pantalla te va marcando cada requisito a medida que escribís.</li>
+    <li>Te mandamos un <strong>código por email</strong>. Escribilo en <span class="ui primary">Confirmar y crear cuenta</span>. Si no te llegó, revisá spam o tocá <span class="ui">Reenviar código</span>.</li>
+    <li>Listo: entrás directo a la app y podés crear tu primer servidor.</li>
+  </ol>
+  <p>También podés registrarte e ingresar con <span class="ui">Continuar con Google</span>, sin crear una contraseña.</p>
+
+  <h3>Ingresar</h3>
+  <ol class="steps">
+    <li>Escribí tu email y tu contraseña, o usá <span class="ui">Continuar con Google</span>.</li>
+    <li>Si activaste la <strong>verificación en dos pasos</strong>, ingresá el código de 6 dígitos de tu app autenticadora. Si no tenés el celular a mano, usá uno de tus <strong>códigos de recuperación</strong>.</li>
+  </ol>
+  <p>Tu sesión se renueva sola mientras uses la app: no tenés que volver a ingresar cada vez.</p>
+
+  <div class="note warn">
+    <svg><use href="#i-warn"/></svg>
+    <p><b>"Estamos despertando el servidor".</b> Si nadie usó Discordia por un rato, el primer ingreso puede tardar hasta un minuto. Podés ir completando tus datos mientras tanto; la pantalla te avisa cuando está lista.</p>
+  </div>
+
+  <h3>Olvidé mi contraseña</h3>
+  <ol class="steps">
+    <li>En el ingreso, tocá <span class="ui">¿Olvidaste tu contraseña?</span> y escribí tu email.</li>
+    <li>Te llega un link para elegir una contraseña nueva. <strong>Vence en una hora</strong> y sirve una sola vez.</li>
+  </ol>
+  <div class="note">
+    <svg><use href="#i-lock"/></svg>
+    <p><b>Por tu seguridad,</b> después de varios intentos fallidos de ingreso la cuenta se bloquea unos minutos. La pantalla te dice cuánto falta para volver a intentar.</p>
+  </div>
+</section>
+
+<!-- ============ 2. CUENTA ============ -->
+<section class="chapter" id="cuenta">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">02</span><h2>Tu perfil y tu cuenta</h2></div>
+  <p class="chapter-lead">Tu <strong>perfil</strong> es lo que ven los demás. <strong>Mi cuenta</strong> son tus datos de acceso. Los dos se abren desde tu avatar, abajo a la izquierda.</p>
+
+  <div class="row">
+    <div class="grow">
+      <h3 style="margin-top:0">Tu estado</h3>
+      <p>Tocá tu avatar y elegí <span class="ui">Cambiar estado</span>. Los demás ven el punto de color junto a tu nombre:</p>
+      <table class="t">
+        <tr><th>Estado</th><th>Qué ven los demás</th></tr>
+        <tr><td><span class="dot online"></span>&nbsp; En línea</td><td>Que estás conectado.</td></tr>
+        <tr><td><span class="dot away"></span>&nbsp; Ausente</td><td>Que estás conectado pero no frente a la app.</td></tr>
+        <tr><td><span class="dot dnd"></span>&nbsp; No molestar</td><td>Que preferís que no te escriban ahora.</td></tr>
+        <tr><td><span class="dot off"></span>&nbsp; Invisible</td><td>Te ven desconectado, aunque estés usando la app.</td></tr>
+      </table>
+    </div>
+    <div class="menu" style="margin-top:4mm">
+      <div class="head">Tu cuenta</div>
+      <div class="item"><svg><use href="#i-users"/></svg>Perfil</div>
+      <div class="item"><svg><use href="#i-key"/></svg>Mi cuenta</div>
+      <div class="item hi"><span class="dot online"></span>Cambiar estado<small>En línea</small></div>
+      <div class="sep"></div>
+      <div class="item bad"><svg><use href="#i-out"/></svg>Cerrar sesión</div>
+    </div>
+  </div>
+  </div>
+
+  <h3>Editar tu perfil</h3>
+  <p>En <span class="ui">Perfil</span> podés cambiar tu <strong>foto</strong> (JPEG, PNG o WebP de hasta 5 MB), tu <strong>nombre</strong>, tu <strong>bio</strong> ("Contá algo sobre vos") y un <strong>estado personalizado</strong> ("¿Qué estás haciendo?"), que aparece debajo de tu nombre hasta que lo borres. Tocá <span class="ui primary">Guardar</span> y el cambio se ve al instante para todos.</p>
+  <p>Para ver el perfil de otra persona, tocá su nombre o su avatar en el chat o en la lista de miembros. Desde ahí también podés <a href="#voz">llamarla</a>.</p>
+
+  <h3>Mi cuenta</h3>
+  <table class="t">
+    <tr><th>Dato</th><th>Qué podés hacer</th></tr>
+    <tr><td>Email</td><td>Cambiarlo y verificarlo. El cambio se confirma con un link que llega a la casilla nueva.</td></tr>
+    <tr><td>Contraseña</td><td>Cambiarla ingresando la actual. Si entrás solo con Google, podés crear una.</td></tr>
+    <tr><td>Google</td><td>Vincular tu cuenta de Google para entrar con un toque, o desvincularla (antes tenés que tener contraseña).</td></tr>
+    <tr><td>Verificación en dos pasos</td><td>Pedir un código de tu celular además de la contraseña. Ver abajo.</td></tr>
+  </table>
+
+  <h3>Activar la verificación en dos pasos</h3>
+  <ol class="steps">
+    <li>En <span class="ui">Mi cuenta</span>, junto a <strong>Verificación en dos pasos</strong>, tocá <span class="ui">Activar</span>.</li>
+    <li>Escaneá el código QR con una app autenticadora (Google Authenticator, Microsoft Authenticator, Authy o similar).</li>
+    <li>Escribí el código de 6 dígitos que te muestra la app para confirmar.</li>
+    <li>Guardá tus <strong>códigos de recuperación</strong> con <span class="ui">Copiar todos</span> o <span class="ui">Descargar .txt</span>. Cada uno sirve una sola vez para entrar si perdés el celular.</li>
+  </ol>
+  <div class="note danger">
+    <svg><use href="#i-key"/></svg>
+    <p><b>Guardá los códigos de recuperación en un lugar seguro.</b> Sin el celular y sin esos códigos no vas a poder entrar a tu cuenta.</p>
+  </div>
+</section>
+
+<!-- ============ 3. SERVIDORES ============ -->
+<section class="chapter" id="servidores">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">03</span><h2>Servidores</h2></div>
+  <p class="chapter-lead">Un servidor es el espacio de una comunidad: tu grupo de amigos, tu curso, tu equipo. Tus servidores aparecen como íconos en la columna de la izquierda.</p>
+
+  <h3>Crear un servidor o sumarte a uno</h3>
+  <ol class="steps">
+    <li>En la columna de servidores, tocá <span class="ui">+</span> (<strong>Agregar servidor</strong>).</li>
+    <li>Para <strong>crear</strong> uno, ponele un nombre (por ejemplo "FIUBA · IS2") y tocá <span class="ui primary">Crear servidor</span>. Vas a ser su dueño.</li>
+    <li>Para <strong>sumarte</strong> a uno, pegá el link de invitación que te pasaron (por ejemplo <code>discordia.app/invite/abc123</code>). También podés abrir el link directamente.</li>
+  </ol>
+  </div>
+
+  <div class="row">
+    <div class="grow">
+      <h3 style="margin-top:0">El menú del servidor</h3>
+      <p>Casi todo lo que se hace con un servidor está en su menú. Abrilo <strong>manteniendo apretado</strong> el ícono del servidor en Android, o con <strong>clic derecho</strong> en la web.</p>
+      <p>Cada persona ve solo las opciones que su rol le permite: un miembro común ve <em>Invitar</em> (si tiene permiso), <em>Reportar servidor</em> y <em>Salir del servidor</em>; el dueño y los administradores ven el resto.</p>
+    </div>
+    <div class="menu">
+      <div class="head">FIUBA · IS2</div>
+      <div class="item hi"><svg><use href="#i-link"/></svg>Invitar al servidor</div>
+      <div class="item"><svg><use href="#i-gear"/></svg>Configuración del servidor</div>
+      <div class="item"><svg><use href="#i-users"/></svg>Roles</div>
+      <div class="item"><svg><use href="#i-chart"/></svg>Métricas del servidor</div>
+      <div class="item"><svg><use href="#i-shield"/></svg>Moderación</div>
+      <div class="item"><svg><use href="#i-ban"/></svg>Miembros baneados</div>
+      <div class="sep"></div>
+      <div class="item"><svg><use href="#i-out"/></svg>Salir del servidor</div>
+      <div class="item bad"><svg><use href="#i-trash"/></svg>Eliminar servidor</div>
+    </div>
+  </div>
+
+  <h3>Invitar gente</h3>
+  <p>Elegí <span class="ui">Invitar al servidor</span>, configurá cuándo vence el link y cuántas veces se puede usar (o <em>Nunca</em> e <em>Ilimitado</em>), tocá <span class="ui primary">Generar invitación</span> y después <span class="ui">Copiar link</span>. Cualquiera que lo abra con una cuenta de Discordia entra al servidor, salvo que esté baneado.</p>
+
+  <h3>Configurar el servidor</h3>
+  <p>En <span class="ui">Configuración del servidor</span> cambiás el <strong>nombre</strong>, el <strong>ícono</strong> y el <strong>banner</strong> (JPEG, PNG o WebP de hasta 5 MB). Los cambios se reflejan para todos los miembros al instante.</p>
+
+  <h3>Métricas</h3>
+  <p>Si administrás el servidor, <span class="ui">Métricas del servidor</span> muestra para el período que elijas cuántos <strong>miembros activos</strong> hubo, cuántos <strong>mensajes</strong> se enviaron y borraron, cuántos <strong>miembros nuevos</strong> llegaron, y un gráfico de la evolución de miembros por día o por semana.</p>
+
+  <h3>Salir, transferir o eliminar</h3>
+  <ul class="dots">
+    <li><strong>Salir del servidor:</strong> dejás de verlo. Podés volver con una invitación nueva.</li>
+    <li><strong>Transferir propiedad:</strong> el dueño puede pasarle el servidor a otro miembro desde el menú de ese miembro. Después de transferirlo, el dueño puede salir.</li>
+    <li><strong>Eliminar servidor:</strong> solo el dueño. Hay que escribir el nombre del servidor para confirmar.</li>
+  </ul>
+  <div class="note danger">
+    <svg><use href="#i-trash"/></svg>
+    <p><b>Eliminar un servidor es definitivo.</b> Se borran sus canales, sus mensajes y sus roles, y todos los miembros pierden el acceso al instante.</p>
+  </div>
+</section>
+
+<!-- ============ 4. CANALES ============ -->
+<section class="chapter" id="canales">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">04</span><h2>Canales y categorías</h2></div>
+  <p class="chapter-lead">Cada servidor se divide en canales. Los de <strong>texto</strong> son para escribir; los de <strong>voz</strong>, para hablar. Las <strong>categorías</strong> los agrupan.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-chat"/></svg></span>Canal de texto</h4>
+      <p>Tiene un nombre y un tema opcional ("¿De qué se habla en este canal?"). El historial queda guardado y se puede leer en cualquier momento.</p>
+    </div>
+    <div class="card">
+      <h4><span class="ico"><svg><use href="#i-mic"/></svg></span>Canal de voz</h4>
+      <p>Una sala siempre abierta: entrás, hablás y salís cuando quieras. Ves quién está adentro antes de entrar.</p>
+    </div>
+  </div>
+  </div>
+
+  <h3>Crear, editar y eliminar</h3>
+  <ol class="steps">
+    <li>Para crear, usá <span class="ui">Crear canal</span> o <span class="ui">Crear categoría</span> en la lista de canales.</li>
+    <li>Para editar o eliminar, abrí el menú del canal: <strong>mantené apretado</strong> el canal en Android o hacé <strong>clic derecho</strong> en la web.</li>
+    <li>Desde ese mismo menú podés ajustar los <strong>permisos por rol</strong> de ese canal, por ejemplo un canal que solo lea cierto rol.</li>
+  </ol>
+  <p>Necesitás un rol con permiso para administrar canales. Si no ves estas opciones, pedíselo a quien administre el servidor.</p>
+
+  <div class="note">
+    <svg><use href="#i-info"/></svg>
+    <p><b>¿Qué significa un canal en negrita?</b> Que tiene mensajes que todavía no leíste. Si además te mencionaron, el ícono del servidor muestra un contador rojo.</p>
+  </div>
+</section>
+
+<!-- ============ 5. MENSAJES ============ -->
+<section class="chapter" id="mensajes">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">05</span><h2>Mensajes</h2></div>
+  <p class="chapter-lead">Los mensajes llegan en tiempo real a todos los que están en el canal. Si se te corta la conexión un momento, la app se reconecta sola y trae lo que te perdiste.</p>
+
+  <div class="mock">
+    <div class="bar"><i></i><i></i><i></i><span># general</span></div>
+    <div class="body">
+      <div class="msg"><div class="av">LM</div><div><div class="who">Lucía M. <span class="tag">Admin</span><time>18:02</time></div><div class="txt">¿Quién se suma a repasar para el parcial?</div></div></div>
+      <div class="msg"><div class="av">TB</div><div><div class="who">Tomás B.<time>18:03</time></div><div class="txt">Yo! <span class="mention">@Lucía M.</span> ¿armamos un canal de voz a las 20?</div></div></div>
+      <div class="composer">Escribí un mensaje en #general…</div>
+    </div>
+  </div>
+  </div>
+
+  <h3>Escribir y mencionar</h3>
+  <p>Escribí en el campo de abajo y enviá. Para <strong>mencionar</strong> a alguien escribí <span class="key">@</span> y elegí de la lista: una persona, un rol entero o todo el servidor. A los mencionados les llega una notificación aunque tengan el canal silenciado en "Solo menciones".</p>
+
+  <h3>Editar, borrar o reportar un mensaje</h3>
+  <ol class="steps">
+    <li><strong>Mantené apretado</strong> el mensaje (o pasá el mouse por encima en la web) para abrir sus acciones.</li>
+    <li>Elegí <span class="ui"><svg width="11" height="11" style="stroke:currentColor"><use href="#i-pen"/></svg> Editar</span> o <span class="ui danger">Eliminar</span> en tus propios mensajes. Los editados muestran "(editado)".</li>
+    <li>Para un mensaje de otra persona que no corresponde, elegí <span class="ui"><svg width="11" height="11" style="stroke:currentColor"><use href="#i-flag"/></svg> Reportar mensaje</span> y contá qué pasó. Lo revisan los moderadores del servidor.</li>
+  </ol>
+  <p>Los moderadores también pueden borrar mensajes de otros; queda registrado en el registro de moderación.</p>
+
+  <h3>Historial</h3>
+  <p>Al abrir un canal ves los últimos mensajes. Subí hasta arriba y tocá <span class="ui">Cargar mensajes anteriores</span> para seguir leyendo hacia atrás.</p>
+
+  <h3>Cuando un mensaje no se envía</h3>
+  <div class="mock">
+    <div class="body">
+      <div class="composer">Esto es una palabra_prohibida</div>
+      <div class="error-line">El mensaje contiene una palabra prohibida en este servidor: "palabra_prohibida".</div>
+    </div>
+  </div>
+  <ul class="dots">
+    <li><strong>Palabra prohibida:</strong> el servidor tiene un filtro de palabras. El mensaje no se envía y queda en el campo para que lo corrijas.</li>
+    <li><strong>Estás silenciado:</strong> un moderador te silenció por un tiempo. El campo se deshabilita y te dice hasta cuándo.</li>
+    <li><strong>Sin conexión:</strong> la app te avisa y podés reintentar. El texto no se pierde.</li>
+  </ul>
+</section>
+
+<!-- ============ 6. NOTIFICACIONES ============ -->
+<section class="chapter" id="notificaciones">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">06</span><h2>Notificaciones</h2></div>
+  <p class="chapter-lead">La campana te muestra las menciones que todavía no viste, y vos decidís cuánto te avisa cada canal o servidor.</p>
+
+  <div class="row">
+    <div class="grow">
+      <h3 style="margin-top:0">Centro de notificaciones</h3>
+      <p>Tocá <span class="ui"><svg width="11" height="11" style="stroke:currentColor"><use href="#i-bell"/></svg> Notificaciones</span>. Ves tus menciones recientes con el servidor y el canal de cada una; tocá una para ir directo al mensaje. Al abrir el canal, se marcan como leídas.</p>
+      <h3>Elegir cuánto te avisa cada canal</h3>
+      <p>Desde el menú de un canal o de un servidor, en <strong>Notificaciones del canal</strong> o <strong>del servidor</strong>, elegí un nivel. Lo que definas para un canal tiene prioridad sobre lo del servidor.</p>
+    </div>
+    <div class="menu">
+      <div class="head">Notificaciones del canal</div>
+      <div class="item"><svg><use href="#i-bell"/></svg>Todos los mensajes</div>
+      <div class="item hi"><span style="font-weight:800;width:13px;text-align:center">@</span>Solo menciones<small>Elegido</small></div>
+      <div class="item"><svg><use href="#i-mute"/></svg>Ninguno</div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ============ 7. VOZ ============ -->
+<section class="chapter" id="voz">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">07</span><h2>Voz, video y llamadas</h2></div>
+  <p class="chapter-lead">Hablá en los canales de voz de tus servidores o llamá a alguien en privado. En los dos casos podés sumar cámara y compartir pantalla.</p>
+
+  <h3>Entrar a un canal de voz</h3>
+  <ol class="steps">
+    <li>Tocá un canal de voz en la lista. Antes de entrar ves quién está conectado.</li>
+    <li>Tocá <span class="ui primary">Unirme</span>. La primera vez, permití el acceso al micrófono.</li>
+    <li>Mientras hablás, tu recuadro se ilumina para que los demás sepan quién está hablando.</li>
+  </ol>
+  </div>
+
+  <div class="mock">
+    <div class="bar"><i></i><i></i><i></i><span>🔊 Sala de estudio · Conectado</span></div>
+    <div class="body">
+      <div class="controls">
+        <div class="ctl"><div class="b on"><svg><use href="#i-mic"/></svg></div>Micrófono</div>
+        <div class="ctl"><div class="b"><svg><use href="#i-cam"/></svg></div>Cámara</div>
+        <div class="ctl"><div class="b"><svg><use href="#i-screen"/></svg></div>Pantalla</div>
+        <div class="ctl"><div class="b"><svg><use href="#i-grid"/></svg></div>Diseño</div>
+        <div class="ctl"><div class="b end"><svg><use href="#i-hang"/></svg></div>Desconectar</div>
+      </div>
+    </div>
+  </div>
+
+  <table class="t">
+    <tr><th>Control</th><th>Qué hace</th></tr>
+    <tr><td>Micrófono</td><td>Silencia o activa tu micrófono. Los demás ven el ícono tachado.</td></tr>
+    <tr><td>Cámara</td><td>Enciende o apaga tu video.</td></tr>
+    <tr><td>Pantalla</td><td>Comparte tu pantalla o una ventana (en la web). Tocá de nuevo para dejar de compartir.</td></tr>
+    <tr><td>Diseño</td><td><em>Automático</em>, <em>Mosaico</em>, <em>Destacado</em> o <em>Barra lateral</em>. Podés <strong>fijar</strong> a una persona para verla grande.</td></tr>
+    <tr><td>Desconectar</td><td>Salís del canal de voz.</td></tr>
+  </table>
+  <p>Si alguien te molesta, podés elegir <span class="ui">Silenciar para mí</span> en su recuadro; los demás lo siguen escuchando. Podés volver al chat sin cortar: la barra de llamada activa queda arriba para volver o colgar.</p>
+
+  <h3>Llamadas privadas</h3>
+  <ol class="steps">
+    <li>Abrí el perfil de la persona y tocá <span class="ui primary">Llamar</span>.</li>
+    <li>A la otra persona le aparece la llamada entrante con <span class="ui primary">Aceptar</span> y <span class="ui danger">Rechazar</span>.</li>
+    <li>Una vez conectados, tenés los mismos controles que en un canal de voz.</li>
+  </ol>
+
+  <div class="note warn">
+    <svg><use href="#i-mic"/></svg>
+    <p><b>"Micrófono bloqueado por un moderador".</b> Si un moderador te silenció en el servidor, podés escuchar pero no hablar hasta que venza el silencio.</p>
+  </div>
+</section>
+
+<!-- ============ 8. ROLES ============ -->
+<section class="chapter" id="roles">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">08</span><h2>Roles y permisos</h2></div>
+  <p class="chapter-lead">Los roles definen qué puede hacer cada miembro. Un miembro puede tener varios roles, y suma los permisos de todos.</p>
+
+  <h3>Crear y editar roles</h3>
+  <ol class="steps">
+    <li>Abrí el menú del servidor y elegí <span class="ui">Roles</span>.</li>
+    <li>Tocá <span class="ui primary">Crear rol</span>, ponele nombre y activá los permisos con los interruptores: <em>Gestionar servidor</em>, <em>Gestionar canales</em>, <em>Gestionar roles</em>, <em>Crear invitaciones</em>, <em>Eliminar mensajes de otros</em>, <em>Silenciar miembros</em>, <em>Expulsar miembros</em>, <em>Banear miembros</em> y más. <em>Administrador</em> los incluye todos.</li>
+    <li>Marcá un rol <strong>por defecto</strong> para que lo reciba automáticamente cada persona nueva.</li>
+    <li>Con <span class="ui">Reordenar</span> subí o bajá los roles en la <strong>jerarquía</strong>: un rol solo puede gestionar a los que están por debajo.</li>
+  </ol>
+  </div>
+
+  <h3>Asignar roles a un miembro</h3>
+  <p>Abrí la lista de miembros con <span class="ui"><svg width="11" height="11" style="stroke:currentColor"><use href="#i-users"/></svg> Ver miembros</span>, tocá a la persona y elegí <span class="ui">Gestionar roles</span>. Desde un rol también podés ver qué miembros lo tienen.</p>
+
+  <div class="grid-3">
+    <div class="card"><h4><span class="tag">Dueño</span></h4><p>Puede todo, incluso eliminar o transferir el servidor. Hay uno solo.</p></div>
+    <div class="card"><h4><span class="tag">Admin</span></h4><p>Los roles con permiso de administración gestionan el servidor según lo que tengan activado.</p></div>
+    <div class="card"><h4><span class="tag warn">Por defecto</span></h4><p>El rol que reciben todos al entrar. Conviene que tenga solo permisos básicos.</p></div>
+  </div>
+</section>
+
+<!-- ============ 9. MODERACIÓN ============ -->
+<section class="chapter" id="moderacion">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">09</span><h2>Moderación</h2></div>
+  <p class="chapter-lead">Herramientas para mantener sano tu servidor. Cada acción queda en el registro, con quién la hizo y cuándo.</p>
+
+  <div class="row">
+    <div class="grow">
+      <h3 style="margin-top:0">Acciones sobre un miembro</h3>
+      <p>Abrí la lista de miembros y tocá a la persona. Solo podés actuar sobre miembros con un rol inferior al tuyo, y nunca sobre el dueño.</p>
+      <ul class="dots">
+        <li><strong>Silenciar:</strong> no puede escribir ni hablar por el tiempo que elijas (de minutos a 7 días). Se levanta solo al vencer, o antes desde el mismo menú.</li>
+        <li><strong>Expulsar:</strong> sale del servidor, pero puede volver con una invitación.</li>
+        <li><strong>Banear:</strong> sale y no puede volver. Se revierte desde <span class="ui">Miembros baneados</span>.</li>
+      </ul>
+      <p>La persona pierde el acceso al instante, incluso si estaba en un canal de voz o con el chat abierto.</p>
+    </div>
+    <div class="menu">
+      <div class="head">Tomás B.</div>
+      <div class="item"><svg><use href="#i-users"/></svg>Gestionar roles</div>
+      <div class="item"><svg><use href="#i-mute"/></svg>Silenciar</div>
+      <div class="item"><svg><use href="#i-crown"/></svg>Transferir propiedad</div>
+      <div class="item"><svg><use href="#i-flag"/></svg>Reportar</div>
+      <div class="sep"></div>
+      <div class="item bad"><svg><use href="#i-out"/></svg>Expulsar</div>
+      <div class="item bad"><svg><use href="#i-ban"/></svg>Banear</div>
+    </div>
+  </div>
+  </div>
+
+  <h3>El panel de Moderación</h3>
+  <p>Desde el menú del servidor, <span class="ui">Moderación</span> reúne todo en pestañas:</p>
+  <table class="t">
+    <tr><th>Pestaña</th><th>Para qué sirve</th></tr>
+    <tr><td>Pendientes</td><td>Los reportes de mensajes y usuarios que todavía nadie revisó. Podés ver el mensaje, borrarlo, marcar el reporte como revisado o descartarlo.</td></tr>
+    <tr><td>Resueltos</td><td>Los reportes que ya revisaste o descartaste.</td></tr>
+    <tr><td>Registro</td><td>El historial de moderación: expulsiones, baneos, silencios, mensajes borrados y cambios en las palabras prohibidas. Se puede filtrar por tipo.</td></tr>
+    <tr><td>Palabras</td><td>La lista de palabras prohibidas del servidor.</td></tr>
+  </table>
+
+  <h3>Palabras prohibidas</h3>
+  <ol class="steps">
+    <li>En la pestaña <span class="chip on">Palabras</span>, escribí la palabra (por ejemplo "spam") y agregala.</li>
+    <li>Desde el próximo mensaje, nadie puede enviar ni editar un mensaje que la contenga. Quien lo intenta ve un aviso con la palabra que lo bloqueó.</li>
+  </ol>
+  <div class="note">
+    <svg><use href="#i-info"/></svg>
+    <p><b>El filtro no distingue mayúsculas ni tildes,</b> y compara palabras completas: "casa" bloquea "CASA" y "cása", pero no "casamiento".</p>
+  </div>
+</section>
+
+<!-- ============ 10. PROBLEMAS ============ -->
+<section class="chapter" id="problemas">
+  <div class="keep">
+  <div class="chapter-head"><span class="chapter-num">10</span><h2>Si algo no funciona</h2></div>
+  <p class="chapter-lead">La app siempre te dice qué pasó y qué podés hacer. Estos son los avisos más comunes.</p>
+
+  <table class="t">
+    <tr><th>Aviso</th><th>Qué significa y qué hacer</th></tr>
+    <tr><td>Estamos despertando el servidor</td><td>El servicio estaba en reposo. Esperá hasta un minuto; la app reintenta sola.</td></tr>
+    <tr><td>Sin conexión / Reintentar</td><td>Se cortó tu conexión. Revisá tu internet y tocá <span class="ui">Reintentar</span>.</td></tr>
+    <tr><td>Tu sesión expiró</td><td>Pasó mucho tiempo sin usar la app. Volvé a ingresar.</td></tr>
+    <tr><td>Perdiste el acceso</td><td>Te expulsaron o banearon de un servidor, o el servidor se eliminó. Desaparece de tu lista.</td></tr>
+    <tr><td>Servidor suspendido</td><td>El equipo de Discordia suspendió ese servidor. No se puede usar hasta que lo reactiven.</td></tr>
+    <tr><td>Cuenta suspendida</td><td>El equipo de Discordia suspendió tu cuenta. Si creés que es un error, contactá al soporte.</td></tr>
+  </table>
+  </div>
+
+  <h3>Reportar un error</h3>
+  <p>Cuando algo falla del lado del servidor, el aviso incluye un <strong>código de 8 caracteres</strong>, por ejemplo <code>a1b2c3d4</code>. Si escribís al soporte, incluí ese código: con él el equipo encuentra exactamente qué pasó.</p>
+
+  <div class="closing">
+    <span class="brand">D</span>
+    <div><strong>¡Listo para empezar!</strong><p>Creá tu primer servidor, invitá a tu gente y probá un canal de voz. Si te trabás, volvé a esta guía.</p></div>
+  </div>
+</section>
+
+</td></tr></tbody>
+</table>
+
+</body>
+</html>
