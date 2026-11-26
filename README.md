@@ -17,6 +17,7 @@ Este repo no tiene código ni setup, salvo las pruebas de carga en [`pruebas/car
 | [`observabilidad.md`](observabilidad.md) | Contrato de logs y trazas: headers, campos de log, niveles y variables `OTEL_*` |
 | [`pruebas/carga/tests.md`](pruebas/carga/tests.md) | Pruebas de carga y estrés con k6: entorno aislado, datos de prueba, escenarios y cómo correrlos y analizarlos |
 | [`pruebas/carga/informe.md`](pruebas/carga/informe.md) | Informe de las pruebas de carga y estrés: latencias, errores, throughput, cuellos de botella y acciones |
+| [`pruebas/mutacion.md`](pruebas/mutacion.md) | Mutation testing en mensajes: score, análisis de los mutantes sobrevivientes y cómo repetirlo |
 | [`guias/`](guias/) | Guías de usuario en PDF: [la de la app](guias/guia-de-usuario.pdf) (web y Android) y [la del backoffice](guias/guia-del-backoffice.pdf) |
 | [`bitacora.md`](bitacora.md) | Bitácora del proyecto: evolución semanal del backlog, PRs mergeados e hitos de cada checkpoint |
 
